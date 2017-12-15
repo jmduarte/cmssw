@@ -1,7 +1,7 @@
 #ifndef RecoBTag_DeepFlavour_DoubleBTagConverter_h
 #define RecoBTag_DeepFlavour_DoubleBTagConverter_h
 
-#include "deep_helpers.h"
+#include "RecoBTag/DeepFlavour/interface/deep_helpers.h"
 #include "DataFormats/BTauReco/interface/BoostedDoubleSVTagInfoFeatures.h"
 
 #include "DataFormats/BTauReco/interface/BoostedDoubleSVTagInfo.h"
