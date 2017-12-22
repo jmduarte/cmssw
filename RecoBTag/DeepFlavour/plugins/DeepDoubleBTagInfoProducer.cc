@@ -184,7 +184,7 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
 
     // fill features from BoostedDoubleSVTagInfo
     const auto & tag_info_vars = tag_info.taggingVariables();
-    btagbtvdeep::DoubleBTagConverter::DoubleBTagToFeatures(tag_info_vars, features.tag_info_features);
+    btagbtvdeep::DoubleBTagToFeatures(tag_info_vars, features.tag_info_features);
 
     // copy which will be sorted
     auto svs_sorted = *svs;     
@@ -199,7 +199,7 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
         features.sv_features.emplace_back();
         // in C++17 could just get from emplace_back output
         auto & sv_features = features.sv_features.back();
-        btagbtvdeep::SVConverter::SVToFeatures(sv, pv, jet, sv_features);
+        btagbtvdeep::SVToFeatures(sv, pv, jet, sv_features);
       }
     }
 
@@ -285,7 +285,7 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
       auto & c_pf_features = features.c_pf_features.at(entry);
       // fill feature structure 
       if (packed_cand) {
-        btagbtvdeep::ChargedCandidateConverter::PackedCandidateToFeatures(packed_cand, jet, trackinfo, 
+        btagbtvdeep::PackedCandidateToFeatures(packed_cand, jet, trackinfo, 
                                                                           drminpfcandsv, c_pf_features);
       } else if (reco_cand) {
         // get vertex association quality
@@ -313,7 +313,7 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
           edm::LogWarning("MissingFeatures") << "vertex association missing. "
                                              << "dz closest PV will be used as default";
         }
-        btagbtvdeep::ChargedCandidateConverter::RecoCandidateToFeatures(reco_cand, jet, trackinfo, 
+        btagbtvdeep::RecoCandidateToFeatures(reco_cand, jet, trackinfo, 
                                            drminpfcandsv, puppiw,
                                            pv_ass_quality, PV, c_pf_features);
       }
