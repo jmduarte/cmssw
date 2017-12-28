@@ -2,6 +2,8 @@ import FWCore.ParameterSet.Config as cms
 
 from RecoBTag.DeepFlavour.pfDeepFlavourTagInfos_cfi import pfDeepFlavourTagInfos
 from RecoBTag.DeepFlavour.pfDeepFlavourJetTags_cfi import pfDeepFlavourJetTags
+from RecoBTag.DeepFlavour.pfDeepDoubleBTagInfos_cfi import pfDeepDoubleBTagInfos
+from RecoBTag.DeepFlavour.pfDeepDoubleBJetTags_cfi import pfDeepDoubleBJetTags
 from CommonTools.PileupAlgos.Puppi_cff import puppi
 from PhysicsTools.PatAlgos.slimming.primaryVertexAssociation_cfi import primaryVertexAssociation
 
