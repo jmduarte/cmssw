@@ -135,7 +135,7 @@ void DeepDoubleBTFJetTagsProducer::fillDescriptions(edm::ConfigurationDescriptio
   desc.add<edm::FileInPath>("graph_path",
     edm::FileInPath("RecoBTag/Combined/data/DeepDoubleBV00/constant_graph.pb"));
   desc.add<std::vector<std::string>>("lp_names",
-    { "globals_input_batchnorm/keras_learning_phase" });
+    { "cpf_input_batchnorm/keras_learning_phase" });
   desc.add<std::vector<std::string>>("output_names",
     { "ID_pred/Softmax" });
   {
@@ -199,7 +199,7 @@ void DeepDoubleBTFJetTagsProducer::produce(edm::Event& iEvent, const edm::EventS
   const int64_t n_batch_jets = batch_eval_ ?  n_jets : 1;
 
   std::vector<tensorflow::TensorShape> input_sizes {
-    {n_batch_jets, 27},         // input_1 - global double-b features
+    {n_batch_jets, 1, 27},         // input_1 - global double-b features
     {n_batch_jets, 60, 8},     // input_2 - charged pf
     {n_batch_jets, 5, 2},      // input_3 - vertices 
   };

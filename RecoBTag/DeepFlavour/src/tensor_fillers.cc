@@ -42,7 +42,7 @@ namespace btagbtvdeep {
                          std::size_t jet_n,
                          const btagbtvdeep::DeepDoubleBFeatures & features) {
 
-    float* ptr = &tensor.matrix<float>()(jet_n, 0);
+    float* ptr = &tensor.tensor<float, 3>()(jet_n, 1, 0);
 
     // number of elements in different collections
     *ptr = features.c_pf_features.size();
