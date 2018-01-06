@@ -60,7 +60,7 @@ from PhysicsTools.PatAlgos.patInputFiles_cff import filesRelValTTbarPileUpMINIAO
 process.source.fileNames = filesRelValTTbarPileUpMINIAODSIM
 process.source.fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov//store/mc/PhaseIFall16MiniAOD/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PhaseIFall16PUFlat20to50_PhaseIFall16_81X_upgrade2017_realistic_v26-v1/50000/08358A47-61E3-E611-8B77-001E677928AE.root')
 
-process.maxEvents.input = 10
+process.maxEvents.input = 100
 
 from Configuration.EventContent.EventContent_cff import MINIAODSIMEventContent
 process.out.outputCommands = MINIAODSIMEventContent.outputCommands
