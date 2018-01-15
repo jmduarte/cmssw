@@ -110,6 +110,8 @@ namespace btagbtvdeep {
 
     float* ptr = &tensor.tensor<float, 3>()(jet_n, c_pf_n, 0);
 
+    std::cout << "c_pf_n = " << c_pf_n << std::endl;
+    std::cout << "c_pf_features.btagPf_trackEtaRel = " << c_pf_features.btagPf_trackEtaRel << std::endl;
     *ptr     = c_pf_features.btagPf_trackEtaRel;
     *(++ptr) = c_pf_features.btagPf_trackPtRel;
     *(++ptr) = c_pf_features.btagPf_trackPParRatio;
