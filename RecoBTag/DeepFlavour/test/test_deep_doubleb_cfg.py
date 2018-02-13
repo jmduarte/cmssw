@@ -62,7 +62,7 @@ process.source.fileNames = filesRelValTTbarPileUpMINIAODSIM
 process.source.fileNames = cms.untracked.vstring('root://cmsxrootd.fnal.gov//store/mc/RunIISummer16MiniAODv2/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/0A83E4E2-34B6-E611-89A0-549F35AE4FA2.root',
                                                  'root://cmsxrootd.fnal.gov//store/mc/RunIISummer16MiniAODv2/BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/A88400F5-39B6-E611-BEB3-A0369F7F9DE0.root')
 
-process.maxEvents.input = 100
+process.maxEvents.input = -1
 
 from Configuration.EventContent.EventContent_cff import MINIAODSIMEventContent
 process.out.outputCommands = MINIAODSIMEventContent.outputCommands

@@ -19,6 +19,7 @@
 #include "DataFormats/BTauReco/interface/DeepDoubleBTagInfo.h"
 #include "DataFormats/BTauReco/interface/DeepDoubleBFeatures.h"
 
+#include "RecoBTag/DeepFlavour/interface/JetConverter.h"
 #include "RecoBTag/DeepFlavour/interface/DoubleBTagConverter.h"
 #include "RecoBTag/DeepFlavour/interface/SVConverter.h"
 #include "RecoBTag/DeepFlavour/interface/ChargedCandidateConverter.h"
@@ -77,12 +78,13 @@ DeepDoubleBTagInfoProducer::DeepDoubleBTagInfoProducer(const edm::ParameterSet& 
 {
   produces<DeepDoubleBTagInfoCollection>();
    
-  const auto & pvas_tag = iConfig.getParameter<edm::InputTag>("vertex_associator");
+  /*const auto & pvas_tag = iConfig.getParameter<edm::InputTag>("vertex_associator");
   if (!pvas_tag.label().empty()) {
     pvasq_value_map_token_ = consumes<edm::ValueMap<int>>(pvas_tag);
     pvas_token_ = consumes<edm::Association<VertexCollection>>(pvas_tag);
     use_pvasq_value_map_ = true;
   }
+  */
 }
 
 
@@ -166,6 +168,9 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
     if (match.isNonnull()) {
       tag_info = *match; 
     } // will be default values otherwise
+
+    // fill basic jet features
+    btagbtvdeep::JetConverter::JetToFeatures(jet, features.jet_features);
 
     // fill features from BoostedDoubleSVTagInfo
     const auto & tag_info_vars = tag_info.taggingVariables();

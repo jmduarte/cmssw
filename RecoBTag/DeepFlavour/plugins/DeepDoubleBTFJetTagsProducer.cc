@@ -191,6 +191,7 @@ void DeepDoubleBTFJetTagsProducer::produce(edm::Event& iEvent, const edm::EventS
       output_tags.emplace_back(std::make_unique<JetTagCollection>(
             edm::makeRefToBaseProdFrom(jet_ref, iEvent)));
     } else {
+      std::cout << "jet tags empty!"<< std::endl;
       output_tags.emplace_back(std::make_unique<JetTagCollection>());
     }
   }
