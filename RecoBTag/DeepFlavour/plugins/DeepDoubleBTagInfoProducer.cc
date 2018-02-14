@@ -172,6 +172,9 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
     // fill basic jet features
     btagbtvdeep::JetConverter::JetToFeatures(jet, features.jet_features);
 
+    // fill number of pv                                                                                                     
+    features.npv = vtxs->size();
+
     // fill features from BoostedDoubleSVTagInfo
     const auto & tag_info_vars = tag_info.taggingVariables();
     btagbtvdeep::DoubleBTagToFeatures(tag_info_vars, features.tag_info_features);

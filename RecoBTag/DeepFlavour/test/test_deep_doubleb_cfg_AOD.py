@@ -97,6 +97,9 @@ process.maxEvents.input = -1
 from Configuration.EventContent.EventContent_cff import MINIAODSIMEventContent
 #process.out.outputCommands = MINIAODSIMEventContent.outputCommands
 process.out.outputCommands = patEventContentNoCleaning
+process.out.outputCommands.append('keep *_ak8PFJetsCHS*_*_*')
+process.out.outputCommands.append('keep *_offlinePrimaryVertices*_*_*')
+process.out.outputCommands.append('keep *_inclusiveCandidateSecondaryVertices*_*_*')
 process.out.outputCommands.append('keep *_selectedPatJets*_*_*')
 process.out.outputCommands.append('keep *_selectedUpdatedPatJets*_*_*')
 process.out.outputCommands.append('keep *_pfBoostedDoubleSVAK8TagInfos*_*_*')
@@ -104,7 +107,7 @@ process.out.outputCommands.append('keep *_pfDeepDoubleBTagInfos*_*_*')
 process.out.outputCommands.append('keep *_updatedPatJets*_*_*')
 
 print process.out.outputCommands
-process.out.fileName = 'test_deep_doubleb_AODSIM.root'
+process.out.fileName = 'test_deep_doubleb_AODSIM_npv.root'
 
 #                                         ##
 #   process.options.wantSummary = False   ##  (to suppress the long output at the end of the job)

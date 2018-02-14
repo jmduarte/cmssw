@@ -19,7 +19,8 @@ class DeepDoubleBFeatures {
     std::vector<SecondaryVertexFeatures> sv_features;
 
     std::vector<ChargedCandidateFeatures> c_pf_features;
-    
+
+    std::size_t npv; // used by deep flavour     
 };    
 
 
