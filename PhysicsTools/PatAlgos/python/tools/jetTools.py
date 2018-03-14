@@ -572,6 +572,21 @@ def setupBTagging(process, jetSource, pfCandidates, explicitJTA, pvSource, svSou
                                       vertex_associator = vertex_associator,
                                       ),
                                     process, task)
+                
+            if btagInfo == 'pfDeepDoubleBTagInfos':
+                if pfCandidates == cms.InputTag("particleFlow"):
+                  vertex_associator = cms.InputTag("primaryVertexAssociation","original")
+                else:
+                  vertex_associator = cms.InputTag("")
+                addToProcessAndTask(btagPrefix+btagInfo+labelName+postfix,
+                                    btag.pfDeepDoubleBTagInfos.clone(
+                                      jets = jetSource,
+                                      vertices=pvSource,
+                                      secondary_vertices=svSource,
+                                      shallow_tag_infos = cms.InputTag(btagPrefix+'pfBoostedDoubleSVAK8TagInfos'+labelName+postfix),
+                                      vertex_associator = vertex_associator,
+                                      ),
+                                    process, task)
 
             acceptedTagInfos.append(btagInfo)
         elif hasattr(toptag, btagInfo) :
