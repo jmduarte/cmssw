@@ -237,10 +237,10 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
             trackinfo.buildTrackInfo(cand,jet_dir,jet_ref_track_dir,pv);
             c_sorted.emplace_back(i, trackinfo.getTrackSip2dSig(),
                                   -btagbtvdeep::mindrsvpfcand(svs_unsorted,cand,0.8), cand->pt()/jet.pt());
-	    //if (jet.pt() > 200 && std::abs(jet.eta()) < 2.4) std::cout << "cand: " << cand->pt() << " " << cand->eta() << " " << trackinfo.getTrackSip2dSig() << std::endl;
-          }
+	    //if (jet.pt() > 200 && std::abs(jet.eta()) < 2.4) std::cout << "cand: " << cand->pt() << " " << cand->eta() << " " << trackinfo.getTrackSip2dSig() << btagbtvdeep::mindrsvpfcand(svs_unsorted,cand,0.8) << std::endl;
+	    i++;
+	  }
         }
-	i++;
     }
     
     // sort collections (open the black-box if you please) 
@@ -291,7 +291,8 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
       // fill feature structure 
       if (packed_cand) {
         btagbtvdeep::PackedCandidateToFeatures(packed_cand, jet, trackinfo, 
-                                                                          drminpfcandsv, c_pf_features);
+					       drminpfcandsv, c_pf_features);
+	i++;
       } else if (reco_cand) {
         // get vertex association quality
         int pv_ass_quality = 0; // fallback value
@@ -320,11 +321,23 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
         }
         btagbtvdeep::RecoCandidateToFeatures(reco_cand, jet, trackinfo, 
                                            drminpfcandsv, puppiw,
-                                           pv_ass_quality, PV, c_pf_features);
+					     pv_ass_quality, PV, c_pf_features);
+	i++;
       }
     }
-    i++;     
-  }
+    }
+
+    /*
+    // c_pf candidates                                                                                                               
+    auto max_c_pf_n = features.c_pf_features.size();
+    for (std::size_t c_pf_n=0; c_pf_n < max_c_pf_n; c_pf_n++) {
+      //std::cout << c_pf_n  << std::endl;
+      //std::cout << c_sorted.at(c_pf_n).get()  << std::endl;
+      //auto const *cand = jet.daughter(c_sorted.at(c_pf_n).get());
+      const auto & c_pf_features = features.c_pf_features.at(c_pf_n);
+      //if (jet.pt() > 200 && std::abs(jet.eta()) < 2.4) std::cout << "c_pf_features: " <<  c_pf_features.btagPf_trackPtRel << " " << c_pf_features.btagPf_trackEtaRel <<  " " << c_pf_features.btagPf_trackSip2dSig << " " << c_pf_features.drminsv << std::endl;	
+    }
+    */
 
   output_tag_infos->emplace_back(features, jet_ref);
   }
