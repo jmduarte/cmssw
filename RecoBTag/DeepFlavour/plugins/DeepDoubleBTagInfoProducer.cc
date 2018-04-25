@@ -39,10 +39,10 @@
 class DeepDoubleBTagInfoProducer : public edm::stream::EDProducer<> {
 
   public:
-	  explicit DeepDoubleBTagInfoProducer(const edm::ParameterSet&);
-	  ~DeepDoubleBTagInfoProducer() override;
+          explicit DeepDoubleBTagInfoProducer(const edm::ParameterSet&);
+          ~DeepDoubleBTagInfoProducer() override;
 
-	  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+          static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
   private:
     typedef std::vector<reco::DeepDoubleBTagInfo> DeepDoubleBTagInfoCollection;
@@ -50,9 +50,9 @@ class DeepDoubleBTagInfoProducer : public edm::stream::EDProducer<> {
     typedef reco::VertexCollection VertexCollection;
     typedef edm::View<reco::BoostedDoubleSVTagInfo> BoostedDoubleSVTagInfoCollection;
 
-	  void beginStream(edm::StreamID) override {}
-	  void produce(edm::Event&, const edm::EventSetup&) override;
-	  void endStream() override {}
+          void beginStream(edm::StreamID) override {}
+          void produce(edm::Event&, const edm::EventSetup&) override;
+          void endStream() override {}
 
     
     const double jet_radius_;
@@ -197,51 +197,51 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
     std::vector<reco::PFCandidatePtr> reco_ptrs; // needed if reco candidates
     for (unsigned int i = 0; i < jet.numberOfDaughters(); i++){
         auto const *cand = jet.daughter(i);
-	auto packed_cand = dynamic_cast<const pat::PackedCandidate *>(cand);
-	auto reco_cand = dynamic_cast<const reco::PFCandidate *>(cand);
-	// need some edm::Ptr or edm::Ref if reco candidates                                                                                               
-	reco::PFCandidatePtr reco_ptr;
-	if (pf_jet) {
-	  reco_ptr = pf_jet->getPFConstituent(i);
-	  daughters.push_back(reco_cand);
-	  reco_ptrs.push_back(reco_ptr);  
-	} else if (pat_jet && reco_cand) {
-	  reco_ptr = pat_jet->getPFConstituent(i);
-	  daughters.push_back(reco_cand);
-	  reco_ptrs.push_back(reco_ptr);	    
-	} else {
-	  if (cand->numberOfDaughters() > 0){
-	    for (unsigned int k = 0; k < cand->numberOfDaughters(); k++){
-	      daughters.push_back(dynamic_cast<const pat::PackedCandidate*>(cand->daughter(k)));
-	    }
-	  }	
-	  else {
-	    daughters.push_back(packed_cand);
-	  }
-	}
+        auto packed_cand = dynamic_cast<const pat::PackedCandidate *>(cand);
+        auto reco_cand = dynamic_cast<const reco::PFCandidate *>(cand);
+        // need some edm::Ptr or edm::Ref if reco candidates                                                                                               
+        reco::PFCandidatePtr reco_ptr;
+        if (pf_jet && reco_cand) {
+          reco_ptr = pf_jet->getPFConstituent(i);
+          daughters.push_back(reco_cand);
+          reco_ptrs.push_back(reco_ptr);  
+        } else if (pat_jet && reco_cand) {
+          reco_ptr = pat_jet->getPFConstituent(i);
+          daughters.push_back(reco_cand);
+          reco_ptrs.push_back(reco_ptr);            
+        } else {
+          if (cand->numberOfDaughters() > 0){
+            for (unsigned int k = 0; k < cand->numberOfDaughters(); k++){
+              daughters.push_back(dynamic_cast<const pat::PackedCandidate*>(cand->daughter(k)));
+            }
+          }        
+          else {
+            daughters.push_back(packed_cand);
+          }
+        }
     }
 
     //unsigned int i = 0;
-    //for (const auto * cand : daughters) {	
+    //for (const auto * cand : daughters) {        
     for (unsigned int i = 0; i < daughters.size(); i++) {
       auto const *cand = daughters.at(i);
       
       if(cand){
-	// candidates under 950MeV (configurable) are not considered
-	// might change if we use also white-listing
-	if (cand->pt()< min_candidate_pt_) continue; 
-	if (cand->charge() != 0) {
-	  auto & trackinfo = trackinfos.emplace(i,track_builder).first->second;
-	  trackinfo.buildTrackInfo(cand,jet_dir,jet_ref_track_dir,pv);
-	  c_sorted.emplace_back(i, trackinfo.getTrackSip2dSig(),
-				-btagbtvdeep::mindrsvpfcand(svs_unsorted,cand,jet_radius_), cand->pt()/jet.pt());
-	}
+        // candidates under 950MeV (configurable) are not considered
+        // might change if we use also white-listing
+        if (cand->pt()< min_candidate_pt_) continue; 
+        if (cand->charge() != 0) {
+          auto & trackinfo = trackinfos.emplace(i,track_builder).first->second;
+          trackinfo.buildTrackInfo(cand,jet_dir,jet_ref_track_dir,pv);
+          c_sorted.emplace_back(i, trackinfo.getTrackSip2dSig(),
+                                -btagbtvdeep::mindrsvpfcand(svs_unsorted,cand,jet_radius_), cand->pt()/jet.pt());
+        }
       }
     }
     
     // sort collections (open the black-box if you please) 
     std::sort(c_sorted.begin(),c_sorted.end(),
-	      btagbtvdeep::SortingClass<std::size_t>::compareByABCInv);
+              btagbtvdeep::SortingClass<std::size_t>::compareByABCInv);
     
     std::vector<size_t> c_sortedindices;
     
@@ -252,58 +252,58 @@ void DeepDoubleBTagInfoProducer::produce(edm::Event& iEvent, const edm::EventSet
     features.c_pf_features.clear();
     features.c_pf_features.resize(c_sorted.size());
 
-    //for (const auto * cand : daughters) {	
+    //for (const auto * cand : daughters) {        
     for (unsigned int i = 0; i < daughters.size(); i++) {
       auto const *cand = daughters.at(i);
       if(cand) {
-	// candidates under 950MeV are not considered
-	// might change if we use also white-listing
-	if (cand->pt()<0.95) continue;
-	
-	auto packed_cand = dynamic_cast<const pat::PackedCandidate *>(cand);
-	auto reco_cand = dynamic_cast<const reco::PFCandidate *>(cand);
-	
-	// need some edm::Ptr or edm::Ref if reco candidates
-	reco::PFCandidatePtr reco_ptr;
-	if (pf_jet) {
-	  reco_ptr = reco_ptrs.at(i);
-	} else if (pat_jet && reco_cand) {
-	  reco_ptr = reco_ptrs.at(i);
-	}
-	// get PUPPI weight from value map
-	float puppiw = 1.0; // fallback value
+        // candidates under 950MeV are not considered
+        // might change if we use also white-listing
+        if (cand->pt()<0.95) continue;
+        
+        auto packed_cand = dynamic_cast<const pat::PackedCandidate *>(cand);
+        auto reco_cand = dynamic_cast<const reco::PFCandidate *>(cand);
+        
+        // need some edm::Ptr or edm::Ref if reco candidates
+        reco::PFCandidatePtr reco_ptr;
+        if (pf_jet && reco_cand) {
+          reco_ptr = reco_ptrs.at(i);
+        } else if (pat_jet && reco_cand) {
+          reco_ptr = reco_ptrs.at(i);
+        }
+        // get PUPPI weight from value map
+        float puppiw = 1.0; // fallback value
 
-	float drminpfcandsv = btagbtvdeep::mindrsvpfcand(svs_unsorted, cand, jet_radius_);
-	
-	if (cand->charge() != 0) {
-	  // is charged candidate
-	  auto entry = c_sortedindices.at(i);
-	  // get cached track info
-	  auto & trackinfo = trackinfos.at(i);
-	  // get_ref to vector element
-	  auto & c_pf_features = features.c_pf_features.at(entry);
-	  // fill feature structure 
-	  if (packed_cand) {
-	    btagbtvdeep::PackedCandidateToFeatures(packed_cand, jet, trackinfo, 
-						   drminpfcandsv, jet_radius_, c_pf_features);
-	  } else if (reco_cand) {
-	    // get vertex association quality
-	    int pv_ass_quality = 0; // fallback value
-	    // getting the PV as PackedCandidatesProducer
-	    // but using not the slimmed but original vertices
-	    auto ctrack = reco_cand->bestTrack();
-	    int pvi=-1;
-	    float dist=1e99;
-	    for(size_t ii=0;ii<vtxs->size();ii++){
-	      float dz = (ctrack) ? std::abs(ctrack->dz(((*vtxs)[ii]).position())) : 0;
-	      if(dz<dist) {pvi=ii;dist=dz; }
-	    } 
-	    auto PV = reco::VertexRef(vtxs, pvi);
-	    btagbtvdeep::RecoCandidateToFeatures(reco_cand, jet, trackinfo, 
-						 drminpfcandsv, jet_radius_, puppiw,
-						 pv_ass_quality, PV, c_pf_features);
-	  }
-	}
+        float drminpfcandsv = btagbtvdeep::mindrsvpfcand(svs_unsorted, cand, jet_radius_);
+        
+        if (cand->charge() != 0) {
+          // is charged candidate
+          auto entry = c_sortedindices.at(i);
+          // get cached track info
+          auto & trackinfo = trackinfos.at(i);
+          // get_ref to vector element
+          auto & c_pf_features = features.c_pf_features.at(entry);
+          // fill feature structure 
+          if (packed_cand) {
+            btagbtvdeep::PackedCandidateToFeatures(packed_cand, jet, trackinfo, 
+                                                   drminpfcandsv, jet_radius_, c_pf_features);
+          } else if (reco_cand) {
+            // get vertex association quality
+            int pv_ass_quality = 0; // fallback value
+            // getting the PV as PackedCandidatesProducer
+            // but using not the slimmed but original vertices
+            auto ctrack = reco_cand->bestTrack();
+            int pvi=-1;
+            float dist=1e99;
+            for(size_t ii=0;ii<vtxs->size();ii++){
+              float dz = (ctrack) ? std::abs(ctrack->dz(((*vtxs)[ii]).position())) : 0;
+              if(dz<dist) {pvi=ii;dist=dz; }
+            } 
+            auto PV = reco::VertexRef(vtxs, pvi);
+            btagbtvdeep::RecoCandidateToFeatures(reco_cand, jet, trackinfo, 
+                                                 drminpfcandsv, jet_radius_, puppiw,
+                                                 pv_ass_quality, PV, c_pf_features);
+          }
+        }
       }
     }
 
