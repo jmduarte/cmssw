@@ -12,6 +12,8 @@
 <use name="utm"/>
 <use name="L1Trigger/L1TGlobal"/>
 <use name="L1Trigger/L1TCommon"/>
+<use name="hls"/>
+<use name="hls4mlEmulatorExtras"/>
 <library file="*.cc" name="L1TriggerL1TGlobalPlugins">
   <flags EDM_PLUGIN="1"/>
 </library>
