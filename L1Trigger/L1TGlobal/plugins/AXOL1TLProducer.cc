@@ -86,7 +86,7 @@ namespace l1t {
     unsigned int maxNumMuCands_; //4
     unsigned int maxNumJetCands_; //10
     unsigned int maxNumEGCands_; //4
-    //    unsigned int maxNumETCands_; //1
+       // unsigned int maxNumETCands_; //1
 
     // Tokens for inputs from other parts of the L1 system
     edm::EDGetToken egToken;
@@ -130,7 +130,6 @@ namespace l1t {
     produces<BXVector<l1t::EGamma>>();
     produces<BXVector<l1t::Muon>>();
     produces<BXVector<l1t::Jet>>();
-    produces<BXVector<l1t::Tau>>();
     produces<BXVector<l1t::EtSum>>();
 
     //AE model and output
@@ -145,7 +144,7 @@ namespace l1t {
     loader = hls4mlEmulator::ModelLoader(modelname);
     model = loader.load_model();
     produces<float>("anomaly_score");
-
+    produces<std::vector<float>>("anomaly_result");
     // Setup parameters
 
     maxNumMuCands_   = iConfig.getParameter<int>("maxMuCand");
@@ -184,11 +183,12 @@ namespace l1t {
 
     //outputs
     std::unique_ptr<float> anomaly_score(new float); //store anomaly score
-
+    std::unique_ptr<std::vector<float>> anomaly_result(new std::vector<float>(0));
+    
     //needed?
     int bxFirst = bxFirst_;
     int bxLast = bxLast_;
-    std::unique_ptr<l1t::EGammaBxCollection> egammas(new l1t::EGammaBxCollection(0, bxFirst, bxLast));
+    std::unique_ptr<l1t::EGammaBxCollection> egammas(new l1t::EGammaBxCollection(0, bxFirst, bxLast)); //these should maybe be the max size of your array not bxsizes
     std::unique_ptr<l1t::MuonBxCollection> muons(new l1t::MuonBxCollection(0, bxFirst, bxLast));
     std::unique_ptr<l1t::JetBxCollection> jets(new l1t::JetBxCollection(0, bxFirst, bxLast));
     std::unique_ptr<l1t::EtSumBxCollection> etsums(new l1t::EtSumBxCollection(0, bxFirst, bxLast));
@@ -199,8 +199,9 @@ namespace l1t {
     // Input and output of  the model is in the input_t format as defined in the model's firmware/defines.h
     // ap_fixed<8, 6, AP_RND_CONV, AP_SAT> precompiledModelInput[57];
     ap_fixed<8, 6, AP_RND_CONV, AP_SAT> ADModelInput[57];
-    // ap_fixed<10, 7> ADModelResult[13]; //pre-loss-computation result
-    // ap_ufixed<18, 14> ADModelScore; //post-loss-computation result
+    // ap_fixed<10, 7> result[13];
+    std::array<ap_fixed<10, 7>, 13> result;
+    ap_ufixed<18, 14> loss;
     std::pair<std::array<ap_fixed<10, 7>, 13>, ap_ufixed<18, 14> > ADModelResult;
 
     // Make sure that you can get input EG
@@ -268,18 +269,18 @@ namespace l1t {
     for (int iETsum = 0; iETsum < int(1); iETsum++) {
       etsums->push_back(0, etsumVec[iETsum]);
      //This should fill the tensor in the proper order to be fed to the anomaly model
-      ADModelInput[0] = iETsum.et();
+      ADModelInput[0] = etsumVec[iETsum].et();
       ADModelInput[1] = 0.0; //iETsum.eta();
-      ADModelInput[2] = iETsum.phi();
+      ADModelInput[2] = etsumVec[iETsum].phi();
     }
 
     // Fill Egammas
     for (int iEG = 0; iEG < int(maxNumEGCands_); iEG++) {
       if (iEG < maxNumInEGs) {
 	egammas->push_back(0, egammaVec[iEG]);
-	ADModelInput[starti+(3*iEG)+0] = iEG.et(); //starti=3
-	ADModelInput[starti+(3*iEG)+1] = iEG.eta();
-	ADModelInput[starti+(3*iEG)+2] = iEG.phi();
+	ADModelInput[starti+(3*iEG)+0] = egammaVec[iEG].et(); //starti=3
+	ADModelInput[starti+(3*iEG)+1] = egammaVec[iEG].eta();
+	ADModelInput[starti+(3*iEG)+2] = egammaVec[iEG].phi();
       }
     }
     starti += 3*int(maxNumInEGs); //start next loop at index 15 for example = 3*4egcands+3 = 15
@@ -288,9 +289,9 @@ namespace l1t {
     for (int iMu = 0; iMu < int(maxNumMuCands_); iMu++) {
       if (iMu < maxNumInMus) {
 	muons->push_back(0, muonVec[iMu]);
-	ADModelInput[starti+(3*iMu)+0] = iMu.pt(); //starti = 15 
-	ADModelInput[starti+(3*iMu)+1] = iMu.eta();
-	ADModelInput[starti+(3*iMu)+2] = iMu.phi();      
+	ADModelInput[starti+(3*iMu)+0] = muonVec[iMu].pt(); //starti = 15 
+	ADModelInput[starti+(3*iMu)+1] = muonVec[iMu].eta();
+	ADModelInput[starti+(3*iMu)+2] = muonVec[iMu].phi();      
       }
     }
     starti += 3*int(maxNumInMus)+3; //update starti again
@@ -299,9 +300,9 @@ namespace l1t {
     for (int iJet = 0; iJet < int(maxNumJetCands_); iJet++) {
       if (iJet < maxNumInJets) {
 	jets->push_back(0, jetVec[iJet]);
-	ADModelInput[starti+(3*iJet)+0] = iJet.et(); 
-	ADModelInput[starti+(3*iJet)+1] = iJet.eta();
-	ADModelInput[starti+(3*iJet)+2] = iJet.phi();     
+	ADModelInput[starti+(3*iJet)+0] = jetVec[iJet].et(); 
+	ADModelInput[starti+(3*iJet)+1] = jetVec[iJet].eta();
+	ADModelInput[starti+(3*iJet)+2] = jetVec[iJet].phi();     
       }
     }
 
@@ -311,13 +312,22 @@ namespace l1t {
     model->read_result(ADModelResult);// this should be the square sum model result 
     
     // ADModelScore[0] = model->computeLoss(ADModelResult);  now inside of readResult
-    *anomaly_score = (ADModelResult.second).to_float();  //convert the fixed precision result to a proper c++ floating point
-
+    result = ADModelResult.first;
+    loss   = ADModelResult.second;
+    *anomaly_score = (loss).to_float();  //convert the fixed precision result to a proper c++ floating point
+    
+    for (int i = 0; i < 13; i++) {
+      // *anomaly_result[i] =  ((result[i]).to_float());
+      anomaly_result->push_back((result[i]).to_float());
+    }
+    
+    
     iEvent.put(std::move(egammas));
     iEvent.put(std::move(muons));
     iEvent.put(std::move(jets));
     iEvent.put(std::move(etsums));
     iEvent.put(std::move(anomaly_score));
+    iEvent.put(std::move(anomaly_result));
 
   }
 
