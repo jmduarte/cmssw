@@ -116,8 +116,9 @@ namespace l1t {
   //   jetToken = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
   //   etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
 
-  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig){
-
+  //  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig){
+  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig) : loader(hls4mlEmulator::ModelLoader("GTADModel_v1")) {
+    
     bxFirst_ = iConfig.getParameter<int>("bxFirst"); //needed?
     bxLast_ = iConfig.getParameter<int>("bxLast");
     
@@ -140,8 +141,8 @@ namespace l1t {
     // loader = hls4mlEmulator::ModelLoader(modelname); //temp without ext repo
 
     //; //uses ext repo
-    std::string modelname = "GTADModel_v1";
-    loader = hls4mlEmulator::ModelLoader(modelname);
+    // std::string modelname = "GTADModel_v1";
+    // loader = hls4mlEmulator::ModelLoader(modelname);
     model = loader.load_model();
     produces<float>("anomaly_score");
     produces<std::vector<float>>("anomaly_result");
