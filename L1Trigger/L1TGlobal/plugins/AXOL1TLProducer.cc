@@ -61,7 +61,7 @@ namespace l1t {
   //edm?
 
   //not sure what should be before EDProducer. stream, edm, one...?
-  class AXOL1TLProducer : public stream::EDProducer<> {
+  class AXOL1TLProducer : public one::EDProducer<> {
   public:
     explicit AXOL1TLProducer(const ParameterSet&);
     ~AXOL1TLProducer() override;
@@ -70,7 +70,7 @@ namespace l1t {
 
   private:
     void produce(Event&, EventSetup const&) override;
-    void beginJob() override;
+    void beginJob() override; //not sure if need
     void endJob() override;
     //is this ok to not have beginRun and endRun? complained about no override
     // void beginRun(Run const& iR, EventSetup const& iE) override;
@@ -116,16 +116,17 @@ namespace l1t {
   //   jetToken = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
   //   etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
 
-  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig)
-    : loader(hls4mlEmulator::ModelLoader("GTADModel_v1")),
-      bxFirst_(iConfig.getParameter<int>("bxFirst")), //needed?
-      bxLast_(iConfig.getParameter<int>("bxLast")),
-      egToken(consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<InputTag>("egInputTag"))),
-      muToken(consumes<BXVector<l1t::Muon>>(iConfig.getParameter<InputTag>("muInputTag"))),
-      jetToken(consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"))),
-      etsumToken(consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"))){
+  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig){
 
-												 // register what you produce
+    bxFirst_ = iConfig.getParameter<int>("bxFirst"); //needed?
+    bxLast_ = iConfig.getParameter<int>("bxLast");
+    
+    egToken = consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<InputTag>("egInputTag"));
+    muToken = consumes<BXVector<l1t::Muon>>(iConfig.getParameter<InputTag>("muInputTag"));
+    jetToken = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
+    etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
+
+    // register what you produce
     produces<BXVector<l1t::EGamma>>();
     produces<BXVector<l1t::Muon>>();
     produces<BXVector<l1t::Jet>>();
@@ -140,6 +141,8 @@ namespace l1t {
     // loader = hls4mlEmulator::ModelLoader(modelname); //temp without ext repo
 
     //; //uses ext repo
+    std::string modelname = "GTADModel_v1";
+    loader = hls4mlEmulator::ModelLoader(modelname);
     model = loader.load_model();
     produces<float>("anomaly_score");
 
@@ -154,10 +157,10 @@ namespace l1t {
 
   }
 
-  // AXOL1TLProducer::~AXOL1TLProducer() {
-  //   //delete model
-  //   loader.destroy_model();
-  // }
+  AXOL1TLProducer::~AXOL1TLProducer() {
+    // //delete model
+    // loader.destroy_model();
+  }
 
   //
   // member functions
@@ -342,6 +345,7 @@ namespace l1t {
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
     ParameterSetDescription desc;
+    // desc.add<bool>("setBptxMinus", true); 
     desc.setUnknown();
     descriptions.addDefault(desc);
   }
