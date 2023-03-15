@@ -58,8 +58,10 @@ namespace l1t {
   //
   // class declaration
   //
+  //edm?
 
-  class AXOL1TLProducer : public one::EDProducer<> {
+  //not sure what should be before EDProducer. stream, edm, one...?
+  class AXOL1TLProducer : public stream::EDProducer<> {
   public:
     explicit AXOL1TLProducer(const ParameterSet&);
     ~AXOL1TLProducer() override;
@@ -107,13 +109,23 @@ namespace l1t {
   //
   // constructors and destructor
   //
-  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig) {
-    egToken = consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<InputTag>("egInputTag"));
-    muToken = consumes<BXVector<l1t::Muon>>(iConfig.getParameter<InputTag>("muInputTag"));
-    jetToken = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
-    etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
+  //AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig) {
+  // AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig : loader(hls4mlEmulator::ModelLoader("GTADModel_v1")) ){
+  //   egToken = consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<InputTag>("egInputTag"));
+  //   muToken = consumes<BXVector<l1t::Muon>>(iConfig.getParameter<InputTag>("muInputTag"));
+  //   jetToken = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
+  //   etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
 
-    // register what you produce
+  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig)
+    : loader(hls4mlEmulator::ModelLoader("GTADModel_v1")),
+      bxFirst_(iConfig.getParameter<int>("bxFirst")), //needed?
+      bxLast_(iConfig.getParameter<int>("bxLast")),
+      egToken(consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<InputTag>("egInputTag"))),
+      muToken(consumes<BXVector<l1t::Muon>>(iConfig.getParameter<InputTag>("muInputTag"))),
+      jetToken(consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"))),
+      etsumToken(consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"))){
+
+												 // register what you produce
     produces<BXVector<l1t::EGamma>>();
     produces<BXVector<l1t::Muon>>();
     produces<BXVector<l1t::Jet>>();
@@ -124,15 +136,14 @@ namespace l1t {
     //loader = ModelLoader(((std::string)std::getenv("CMSSW_BASE")).append(iConfig.getParameter<string>("compiledAnomalyModelLocation"))) //check syntax
     // uses compiledAnomalyModelLocation = cms.string("/src/L1Trigger/L1TCaloLayer1/data/compiledADModel/caloADModel_v1") in L1Trigger/L1TCaloLayer1/python/uct2016EmulatorDigis_cfi.py
     // loader = hls4mlEmulator::ModelLoader(iConfig.getParameter<string>("AXOL1TLModelVersion")); //check this works, need to define AXOL1TLModelVersion
-    std::string modelname = "/src/L1Trigger/L1TGlobal/test/GTADModel_v1"
-    loader = hls4mlEmulator::ModelLoader(modelname); //temp without ext repo
-    // loader = hls4mlEmulator::ModelLoader(cms.string("hls4ml/GTADModel"); //for eventual ext repo
-    model = loader.load_model();   
+    // std::string modelname = "/src/L1Trigger/L1TGlobal/test/GTADModel_v1"
+    // loader = hls4mlEmulator::ModelLoader(modelname); //temp without ext repo
+
+    //; //uses ext repo
+    model = loader.load_model();
     produces<float>("anomaly_score");
 
     // Setup parameters
-    bxFirst_ = iConfig.getParameter<int>("bxFirst"); //needed?
-    bxLast_ = iConfig.getParameter<int>("bxLast");
 
     maxNumMuCands_   = iConfig.getParameter<int>("maxMuCand");
     maxNumJetCands_  = iConfig.getParameter<int>("maxJetCand");
