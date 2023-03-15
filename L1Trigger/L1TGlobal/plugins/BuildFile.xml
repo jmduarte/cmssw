@@ -14,6 +14,7 @@
 <use name="L1Trigger/L1TCommon"/>
 <use name="hls"/>
 <use name="hls4mlEmulatorExtras"/>
+<use name="AXOL1TL"/>
 <library file="*.cc" name="L1TriggerL1TGlobalPlugins">
   <flags EDM_PLUGIN="1"/>
 </library>
