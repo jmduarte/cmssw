@@ -1,10 +1,7 @@
 ////
 /// \class l1t::AnomalyDetectionAEProducer
 ///
-/// Description: Create input for anomaly detection autoencoder model inference in the proper structure. 
-///
-///
-/// \author: M. Quinnan UCSD
+/// Description: Create input for anomaly detection autoencoder model inference
 ///
 ///  Modeled after BXVectorInputProducer.cc
 ///
@@ -49,18 +46,13 @@ using namespace edm;
 #include "ap_fixed.h"
 #include "hls4ml/emulator.h"
 
-// #ifndef M_PI
-// #define M_PI 3.14159265358979323846
-// #endif
 
 namespace l1t {
 
   //
   // class declaration
   //
-  //edm?
-
-  //not sure what should be before EDProducer. stream, edm, one...?
+ 
   class AXOL1TLProducer : public one::EDProducer<> {
   public:
     explicit AXOL1TLProducer(const ParameterSet&);
@@ -72,88 +64,51 @@ namespace l1t {
     void produce(Event&, EventSetup const&) override;
     void beginJob() override; //not sure if need
     void endJob() override;
-    //is this ok to not have beginRun and endRun? complained about no override
     // void beginRun(Run const& iR, EventSetup const& iE) override;
-    // void endRun(Run const& iR, EventSetup const& iE) override;
+ 
 
     // ----------member data ---------------------------
-
-    // BX parameters (needed?)
-    int bxFirst_;
-    int bxLast_;
-
-    //number of inputs to store
-    unsigned int maxNumMuCands_; //4
-    unsigned int maxNumJetCands_; //10
-    unsigned int maxNumEGCands_; //4
-       // unsigned int maxNumETCands_; //1
-
+    
     // Tokens for inputs from other parts of the L1 system
     edm::EDGetToken egToken;
     edm::EDGetToken muToken;
     edm::EDGetToken jetToken;
     edm::EDGetToken etsumToken;
 
-    // particle vectors
-    int counter_;
-    std::vector<l1t::Muon> muonVec;
-    std::vector<l1t::EGamma> egammaVec;
-    std::vector<l1t::Jet> jetVec;
-    std::vector<l1t::EtSum> etsumVec;
+    // edm::EDGetTokenT <l1t::EGammaBxCollection> egToken;
+    // edm::EDGetTokenT <l1t::JetBxCollection>    jetToken;
+    // edm::EDGetTokenT <l1t::EtSumBxCollection>  etsumToken;
+    // edm::EDGetTokenT <l1t::MuonBxCollection>   muToken;
 
     //HLS4ML emulator objects
     hls4mlEmulator::ModelLoader loader;
     std::shared_ptr<hls4mlEmulator::Model> model;
+
+    //emulator constants
+    const int NInputs = 57;
+    const int NMuons = 4;
+    const int NJets = 10;
+    const int NEgammas = 4;
+
+    const std::string modellocation = "../test/GTADModel_v1"; //"GTADModel_v1" //for cms-dist
   };
 
-  //
-  // constructors and destructor
-  //
-  //AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig) {
-  // AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig : loader(hls4mlEmulator::ModelLoader("GTADModel_v1")) ){
-  //   egToken = consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<InputTag>("egInputTag"));
-  //   muToken = consumes<BXVector<l1t::Muon>>(iConfig.getParameter<InputTag>("muInputTag"));
-  //   jetToken = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
-  //   etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
+  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig) :
+    loader(hls4mlEmulator::ModelLoader(modellocation))  //local or from cms-dist
+  {
 
-  //  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig){
-  AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig) : loader(hls4mlEmulator::ModelLoader("GTADModel_v1")) {
-    
-    bxFirst_ = iConfig.getParameter<int>("bxFirst"); //needed?
-    bxLast_ = iConfig.getParameter<int>("bxLast");
-    
-    egToken = consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<InputTag>("egInputTag"));
-    muToken = consumes<BXVector<l1t::Muon>>(iConfig.getParameter<InputTag>("muInputTag"));
-    jetToken = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
-    etsumToken = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
+    egToken = consumes<l1t::EGammaBxCollection>(iConfig.getParameter<InputTag>("egInputTag"));
+    muToken = consumes<l1t::MuonBxCollection>(iConfig.getParameter<InputTag>("muInputTag"));
+    jetToken = consumes<l1t::JetBxCollection>(iConfig.getParameter<InputTag>("jetInputTag"));
+    etsumToken = consumes<l1t::EGammaBxCollection>(iConfig.getParameter<InputTag>("etsumInputTag"));
 
     // register what you produce
-    produces<BXVector<l1t::EGamma>>();
-    produces<BXVector<l1t::Muon>>();
-    produces<BXVector<l1t::Jet>>();
-    produces<BXVector<l1t::EtSum>>();
-
-    //AE model and output
-    //loader = ModelLoader(((std::string)std::getenv("CMSSW_BASE")).append(iConfig.getParameter<string>("compiledAnomalyModelLocation"))) //check syntax
-    // uses compiledAnomalyModelLocation = cms.string("/src/L1Trigger/L1TCaloLayer1/data/compiledADModel/caloADModel_v1") in L1Trigger/L1TCaloLayer1/python/uct2016EmulatorDigis_cfi.py
-    // loader = hls4mlEmulator::ModelLoader(iConfig.getParameter<string>("AXOL1TLModelVersion")); //check this works, need to define AXOL1TLModelVersion
-    // std::string modelname = "/src/L1Trigger/L1TGlobal/test/GTADModel_v1"
-    // loader = hls4mlEmulator::ModelLoader(modelname); //temp without ext repo
-
-    //; //uses ext repo
-    // std::string modelname = "GTADModel_v1";
-    // loader = hls4mlEmulator::ModelLoader(modelname);
-    model = loader.load_model();
-    produces<float>("anomaly_score");
+    produces<std::vector<float>>("anomaly_input");
     produces<std::vector<float>>("anomaly_result");
-    // Setup parameters
-
-    maxNumMuCands_   = iConfig.getParameter<int>("maxMuCand");
-    maxNumJetCands_  = iConfig.getParameter<int>("maxJetCand");
-    maxNumEGCands_   = iConfig.getParameter<int>("maxEGCand");
-    // maxNumParticles_ = iConfig.getParameter<int>("maxParticles");
-    // NumNNinputs_     = iConfig.getParameter<int>("NumNNinputs");
-    // NumNNoutputs_    = iConfig.getParameter<int>("NumNNoutputs");
+    produces<float>("anomaly_score");
+    
+    //AE model 
+    model = loader.load_model();
 
   }
 
@@ -171,90 +126,37 @@ namespace l1t {
 
     LogDebug("l1t|Global") << "AXOL1TLProducer::produce function called...\n";
 
-    //only keep up to # of objects
-    int maxNumInMus = 4; //max 4 muons input to NN
-    int maxNumInJets = 10; //max 10 jets input to NN
-    int maxNumInEGs = 4; //max 4 egammas input to NN
+    // Get input vectors    
+    edm::Handle<l1t::EGammaBxCollection> inputEgammas;
+    edm::Handle<l1t::JetBxCollection> inputJets;
+    edm::Handle<l1t::EtSumBxCollection> inputEtsums;
+    edm::Handle<l1t::MuonBxCollection> inputMuons;
 
-    // Setup vectors
-    std::vector<l1t::Muon> muonVec;
-    std::vector<l1t::EGamma> egammaVec;
-    std::vector<l1t::Jet> jetVec;
-    std::vector<l1t::EtSum> etsumVec;
+    iEvent.getByToken(egToken, inputEgammas);
+    iEvent.getByToken(jetToken, inputJets);
+    iEvent.getByToken(etsumToken, inputEtsums);
+    iEvent.getByToken(muToken, inputMuons);
+
+    if (!(iEvent.getByToken(egToken, inputEgammas))){ LogTrace("l1t|Global") << ">>> input EG collection not found!" << std::endl;};
+    if (!(iEvent.getByToken(jetToken, inputJets))){ LogTrace("l1t|Global") << ">>> input jet collection not found!" << std::endl;};
+    if (!(iEvent.getByToken(etsumToken, inputEtsums))){LogTrace("l1t|Global") << ">>> input etsum collection not found!" << std::endl;};
+    if (!(iEvent.getByToken(muToken, inputMuons))){ LogTrace("l1t|Global") << ">>> input Mu collection not found!" << std::endl;};
 
     //outputs
-    std::unique_ptr<float> anomaly_score(new float); //store anomaly score
+    std::unique_ptr<std::vector<float>> anomaly_input(new std::vector<float>(0));
     std::unique_ptr<std::vector<float>> anomaly_result(new std::vector<float>(0));
-    
-    //needed?
-    int bxFirst = bxFirst_;
-    int bxLast = bxLast_;
-    std::unique_ptr<l1t::EGammaBxCollection> egammas(new l1t::EGammaBxCollection(0, bxFirst, bxLast)); //these should maybe be the max size of your array not bxsizes
-    std::unique_ptr<l1t::MuonBxCollection> muons(new l1t::MuonBxCollection(0, bxFirst, bxLast));
-    std::unique_ptr<l1t::JetBxCollection> jets(new l1t::JetBxCollection(0, bxFirst, bxLast));
-    std::unique_ptr<l1t::EtSumBxCollection> etsums(new l1t::EtSumBxCollection(0, bxFirst, bxLast));
- 
-    // Bx to use...grab only bx=0 for now
-    int bx = 0;
-
+    std::unique_ptr<float> anomaly_score(new float); //store anomaly score
+        
     // Input and output of  the model is in the input_t format as defined in the model's firmware/defines.h
-    // ap_fixed<8, 6, AP_RND_CONV, AP_SAT> precompiledModelInput[57];
-    ap_fixed<8, 6, AP_RND_CONV, AP_SAT> ADModelInput[57];
-    // ap_fixed<10, 7> result[13];
+    ap_fixed<18,13> ADModelInput[57] = {};
     std::array<ap_fixed<10, 7>, 13> result;
     ap_ufixed<18, 14> loss;
     std::pair<std::array<ap_fixed<10, 7>, 13>, ap_ufixed<18, 14> > ADModelResult;
 
-    // Make sure that you can get input EG
-    Handle<BXVector<l1t::EGamma>> inputEgammas;
-    if (iEvent.getByToken(egToken, inputEgammas)) {
-      for (std::vector<l1t::EGamma>::const_iterator eg = inputEgammas->begin(bx); eg != inputEgammas->end(bx); ++eg) {
-        if ( egammaVec.size() < maxNumEGCands_) { //note no threshold as in BXVector Producer
-          egammaVec.push_back((*eg));
-        }
-      }
-    } else {
-      LogTrace("l1t|Global") << ">>> input EG collection not found!" << std::endl;
-    }
 
-    // Make sure that you can get input Muons
-    Handle<BXVector<l1t::Muon>> inputMuons;
-    if (iEvent.getByToken(muToken, inputMuons)) {
-      for (std::vector<l1t::Muon>::const_iterator mu = inputMuons->begin(bx); mu != inputMuons->end(bx); ++mu) {
-        if ( muonVec.size() < maxNumMuCands_) {
-          muonVec.push_back((*mu));
-        }
-      }
-    } else {
-      LogTrace("l1t|Global") << ">>> input Mu collection not found!" << std::endl;
-    }
-
-    // Make sure that you can get input jet
-    Handle<BXVector<l1t::Jet>> inputJets;
-    if (iEvent.getByToken(jetToken, inputJets)) {
-      for (std::vector<l1t::Jet>::const_iterator jet = inputJets->begin(bx); jet != inputJets->end(bx); ++jet) {
-        if ( jetVec.size() < maxNumJetCands_) {
-          jetVec.push_back((*jet));
-        }
-      }
-    } else {
-      LogTrace("l1t|Global") << ">>> input jet collection not found!" << std::endl;
-    }
-
-    // Make sure that you can get input etsum
-    Handle<BXVector<l1t::EtSum>> inputEtsums;
-    if (iEvent.getByToken(etsumToken, inputEtsums)) {
-      for (std::vector<l1t::EtSum>::const_iterator etsum = inputEtsums->begin(bx); etsum != inputEtsums->end(bx);
-           ++etsum) {
-        etsumVec.push_back((*etsum));
-      }
-    } else {
-      LogTrace("l1t|Global") << ">>> input etsum collection not found!" << std::endl;
-    }
 
     //////////////////
     // Insert all the bx into the L1 Collections
-    //printf("Event %i  EmptyBxEvt %i emptyBxTrailer %i diff %i \n",eventCnt_,emptyBxEvt_,emptyBxTrailer_,(emptyBxEvt_ - eventCnt_));
 
     //ADModelInput = [EtSum.et(), EtSum.eta(), EtSum.phi(), 
     //                4 egammas *(egamma_i.pt(), egamma_i.eta(), egamma_i.phi()),
@@ -262,49 +164,103 @@ namespace l1t {
     //                10 jets *(jpt_i.et(), jet_i.eta(), jet_i.phi()),  ]
 
 
+
+    //default fillval:
+    ap_fixed<18,13> fillzero = 0.0;
+    
+    // Fill Etsums (only the first one)
+    for (int ibx = inputEtsums->getFirstBX(); ibx <= inputEtsums->getLastBX(); ++ibx){ //get object
+      if (ibx != 0) continue;
+      for(l1t::EtSumBxCollection::const_iterator it = inputEtsums->begin(ibx);
+	  it != inputEtsums->end(ibx);
+	  it++) {
+	  int type = static_cast<int>(it->getType());
+	  if (type!=2) continue; //we only really care about the MET, which is sum type 2 ?need?
+	  ADModelInput[0] = it->et();
+	  ADModelInput[1] = fillzero;         
+	  ADModelInput[2] = it->phi();   
+	}
+    }
+  
+
     //counter of starting index of next loop 
     int starti = 3;
-
-    // Fill Etsums
-    // for (int iETsum = 0; iETsum < int(maxNumETCands_); iETsum++) {
-    for (int iETsum = 0; iETsum < int(1); iETsum++) {
-      etsums->push_back(0, etsumVec[iETsum]);
-     //This should fill the tensor in the proper order to be fed to the anomaly model
-      ADModelInput[0] = etsumVec[iETsum].et();
-      ADModelInput[1] = 0.0; //iETsum.eta();
-      ADModelInput[2] = etsumVec[iETsum].phi();
-    }
-
+  
     // Fill Egammas
-    for (int iEG = 0; iEG < int(maxNumEGCands_); iEG++) {
-      if (iEG < maxNumInEGs) {
-	egammas->push_back(0, egammaVec[iEG]);
-	ADModelInput[starti+(3*iEG)+0] = egammaVec[iEG].et(); //starti=3
-	ADModelInput[starti+(3*iEG)+1] = egammaVec[iEG].eta();
-	ADModelInput[starti+(3*iEG)+2] = egammaVec[iEG].phi();
+    int nEGs = 0;
+    for(int ibx = inputEgammas->getFirstBX(); ibx <= inputEgammas->getLastBX(); ++ibx) {
+      if (ibx != 0) continue;
+      for(l1t::EGammaBxCollection::const_iterator it = inputEgammas->begin(ibx);
+	  it != inputEgammas->end(ibx) && nEGs < NEgammas;
+	  it++) {
+	if(it->pt() > 0) {
+	  nEGs++;
+	  ADModelInput[starti+0] = it->et(); //starti=3
+	  ADModelInput[starti+1] = it->eta();
+	  ADModelInput[starti+2] = it->phi();
+	  starti+=3;
+	}
       }
+      if (nEGs<NEgammas){//pad array
+	while(nEGs<NEgammas){
+	  nEGs++;
+	  ADModelInput[starti+0] = fillzero; 
+	  ADModelInput[starti+1] = fillzero;
+	  ADModelInput[starti+2] = fillzero;
+	  starti+=3;
+	} }	
     }
-    starti += 3*int(maxNumInEGs); //start next loop at index 15 for example = 3*4egcands+3 = 15
 
     // Fill Muons
-    for (int iMu = 0; iMu < int(maxNumMuCands_); iMu++) {
-      if (iMu < maxNumInMus) {
-	muons->push_back(0, muonVec[iMu]);
-	ADModelInput[starti+(3*iMu)+0] = muonVec[iMu].pt(); //starti = 15 
-	ADModelInput[starti+(3*iMu)+1] = muonVec[iMu].eta();
-	ADModelInput[starti+(3*iMu)+2] = muonVec[iMu].phi();      
+    starti = 15;
+    int nMUs = 0;
+    for(int ibx = inputMuons->getFirstBX(); ibx <= inputMuons->getLastBX(); ++ibx) {
+      if (ibx != 0) continue;
+      for(l1t::MuonBxCollection::const_iterator it = inputMuons->begin(ibx);
+	  it != inputMuons->end(ibx) && nMUs < NMuons;
+	  it++) {
+	if(it->pt() > 0) {
+	  nMUs++;
+	  ADModelInput[starti+0] = it->et(); //starti=3
+	  ADModelInput[starti+1] = it->eta();
+	  ADModelInput[starti+2] = it->phi();
+	  starti+=3;
+	}
       }
+      if (nMUs<NMuons){//pad array
+	while(nMUs<NMuons){
+	  nMUs++;
+	  ADModelInput[starti+0] = fillzero; 
+	  ADModelInput[starti+1] = fillzero;
+	  ADModelInput[starti+2] = fillzero;
+	  starti+=3;
+	} }	
     }
-    starti += 3*int(maxNumInMus)+3; //update starti again
-
+    
     // Fill Jets
-    for (int iJet = 0; iJet < int(maxNumJetCands_); iJet++) {
-      if (iJet < maxNumInJets) {
-	jets->push_back(0, jetVec[iJet]);
-	ADModelInput[starti+(3*iJet)+0] = jetVec[iJet].et(); 
-	ADModelInput[starti+(3*iJet)+1] = jetVec[iJet].eta();
-	ADModelInput[starti+(3*iJet)+2] = jetVec[iJet].phi();     
+    int nJs = 0;
+    starti = 27;
+    for(int ibx = inputJets->getFirstBX(); ibx <= inputJets->getLastBX(); ++ibx) {
+      if (ibx != 0) continue;
+      for(l1t::JetBxCollection::const_iterator it = inputJets->begin(ibx);
+	  it != inputJets->end(ibx) && nJs < NJets;
+	  it++) {
+	if(it->pt() > 0) {
+	  nJs++;
+	  ADModelInput[starti+0] = it->et(); //starti=3
+	  ADModelInput[starti+1] = it->eta();
+	  ADModelInput[starti+2] = it->phi();
+	  starti+=3;
+	}
       }
+      if (nJs<NJets){//pad array
+	while(nJs<NJets){
+	  nJs++;
+	  ADModelInput[starti+0] = fillzero; 
+	  ADModelInput[starti+1] = fillzero;
+	  ADModelInput[starti+2] = fillzero;
+	  starti+=3;
+	} }	
     }
 
     // run inference on anomaly model
@@ -312,21 +268,21 @@ namespace l1t {
     model->predict();
     model->read_result(ADModelResult);// this should be the square sum model result 
     
-    // ADModelScore[0] = model->computeLoss(ADModelResult);  now inside of readResult
     result = ADModelResult.first;
     loss   = ADModelResult.second;
     *anomaly_score = (loss).to_float();  //convert the fixed precision result to a proper c++ floating point
     
+    for (int i = 0; i < NInputs; i++) {
+      anomaly_input->push_back((ADModelInput[i]).to_float());
+    }
+
     for (int i = 0; i < 13; i++) {
-      // *anomaly_result[i] =  ((result[i]).to_float());
       anomaly_result->push_back((result[i]).to_float());
     }
     
     
-    iEvent.put(std::move(egammas));
-    iEvent.put(std::move(muons));
-    iEvent.put(std::move(jets));
-    iEvent.put(std::move(etsums));
+    
+    iEvent.put(std::move(anomaly_input));
     iEvent.put(std::move(anomaly_score));
     iEvent.put(std::move(anomaly_result));
 
@@ -361,7 +317,7 @@ namespace l1t {
     descriptions.addDefault(desc);
   }
 
-  }  // namespace l1t
+}  // namespace l1t
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(l1t::AXOL1TLProducer);
