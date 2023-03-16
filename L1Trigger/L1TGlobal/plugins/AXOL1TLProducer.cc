@@ -266,7 +266,7 @@ namespace l1t {
     // run inference on anomaly model
     model->prepare_input(ADModelInput); //scaling internal here
     model->predict();
-    model->read_result(ADModelResult);// this should be the square sum model result 
+    model->read_result(&ADModelResult);// this should be the square sum model result
     
     result = ADModelResult.first;
     loss   = ADModelResult.second;
