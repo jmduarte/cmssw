@@ -266,7 +266,7 @@ namespace l1t {
     // run inference on anomaly model
     model->prepare_input(ADModelInput); //scaling internal here
     model->predict();
-    model->read_result(ADModelResult);// this should be the square sum model result 
+    model->read_result(&ADModelResult);// this should be the square sum model result
     
     result = ADModelResult.first;
     loss   = ADModelResult.second;
@@ -309,12 +309,16 @@ namespace l1t {
 
   // ------------ method fills 'descriptions' with the allowed parameters for the module ------------
   void AXOL1TLProducer::fillDescriptions(ConfigurationDescriptions& descriptions) {
-    //The following says we do not know what parameters are allowed so do no validation
-    // Please change this to state exactly what you do use, even if it is no parameters
     ParameterSetDescription desc;
-    // desc.add<bool>("setBptxMinus", true); 
-    desc.setUnknown();
-    descriptions.addDefault(desc);
+    desc.add<edm::InputTag>("egInputTag", edm::InputTag(""))
+      ->setComment("InputTag for Calo EGamma Trigger (required parameter:  default value is invalid)");
+    desc.add<edm::InputTag>("muInputTag", edm::InputTag(""))
+      ->setComment("InputTag for Global Muon Trigger (required parameter:  default value is invalid)");
+    desc.add<edm::InputTag>("jetInputTag", edm::InputTag(""))
+      ->setComment("InputTag for Calo Trigger Jet (required parameter:  default value is invalid)");
+    desc.add<edm::InputTag>("etsumInputTag", edm::InputTag(""))
+      ->setComment("InputTag for Calo Trigger EtSum (required parameter:  default value is invalid)");
+    descriptions.add("AXOL1TLProducer", desc);
   }
 
 }  // namespace l1t
