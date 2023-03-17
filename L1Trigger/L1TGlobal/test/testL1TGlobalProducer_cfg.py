@@ -125,7 +125,7 @@ process.AXOL1TLProducer = cms.EDProducer(
     muInputTag = cms.InputTag('simGmtStage2Digis'),
     jetInputTag = cms.InputTag('simCaloStage2Digis'),
     etsumInputTag = cms.InputTag('simCaloStage2Digis'),
-    AXOL1TLModelVersion = cms.string('/afs/cern.ch/user/w/woodson/work/L1ANOMALY/CMSSW_13_1_X_2023-03-14-2300/src/L1Trigger/L1TGlobal/test/GTADModel_v1')
+    AXOL1TLModelVersion = cms.string('./GTADModel_v1')
 )
 
 
