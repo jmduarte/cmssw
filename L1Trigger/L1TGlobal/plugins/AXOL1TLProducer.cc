@@ -96,9 +96,9 @@ AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig)
   etsumToken = consumes<l1t::EGammaBxCollection>(iConfig.getParameter<InputTag>("etsumInputTag"));
 
   // register what you produce
-  produces<std::vector<float>>("anomaly_input");
-  produces<std::vector<float>>("anomaly_result");
-  produces<float>("anomaly_score");
+  produces<std::vector<float>>("anomalyInput");
+  produces<std::vector<float>>("anomalyResult");
+  produces<float>("anomalyScore");
 
   //AE model
   model = loader.load_model();
@@ -142,9 +142,9 @@ void AXOL1TLProducer::produce(Event& iEvent, const EventSetup& iSetup) {
   };
 
   //outputs
-  std::unique_ptr<std::vector<float>> anomaly_input(new std::vector<float>(0));
-  std::unique_ptr<std::vector<float>> anomaly_result(new std::vector<float>(0));
-  std::unique_ptr<float> anomaly_score(new float);  //store anomaly score
+  std::unique_ptr<std::vector<float>> anomalyInput(new std::vector<float>(0));
+  std::unique_ptr<std::vector<float>> anomalyResult(new std::vector<float>(0));
+  std::unique_ptr<float> anomalyScore(new float);  //store anomaly score
 
   // Input and output of  the model is in the input_t format as defined in the model's firmware/defines.h
   ap_fixed<18, 13> ADModelInput[57] = {};
@@ -268,19 +268,19 @@ void AXOL1TLProducer::produce(Event& iEvent, const EventSetup& iSetup) {
 
   result = ADModelResult.first;
   loss = ADModelResult.second;
-  *anomaly_score = (loss).to_float();  //convert the fixed precision result to a proper c++ floating point
+  *anomalyScore = (loss).to_float();  //convert the fixed precision result to a proper c++ floating point
 
   for (int i = 0; i < NInputs; i++) {
-    anomaly_input->push_back((ADModelInput[i]).to_float());
+    anomalyInput->push_back((ADModelInput[i]).to_float());
   }
 
   for (int i = 0; i < 13; i++) {
-    anomaly_result->push_back((result[i]).to_float());
+    anomalyResult->push_back((result[i]).to_float());
   }
 
-  iEvent.put(std::move(anomaly_input));
-  iEvent.put(std::move(anomaly_score));
-  iEvent.put(std::move(anomaly_result));
+  iEvent.put(std::move(anomalyInput));
+  iEvent.put(std::move(anomalyScore));
+  iEvent.put(std::move(anomalyResult));
 }
 
 // ------------ method called once each job just before starting event loop ------------
