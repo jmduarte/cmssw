@@ -149,8 +149,14 @@ process.l1tGlobalSummary = cms.EDAnalyzer( 'L1TGlobalSummary',
     psColumn = cms.int32( 0 )
 )
 
+process.output = cms.OutputModule("PoolOutputModule",
+                                  outputCommands = cms.untracked.vstring('keep *_*_*_TEST'),
+                                  fileName = cms.untracked.string('poolout.root')
+)
+
 # EndPath definition
-process.l1tEndPath = cms.EndPath( process.l1tGlobalSummary )
+process.l1tEndPath = cms.EndPath( process.l1tGlobalSummary + process.output)
+
 
 # MessageLogger
 process.load('FWCore.MessageService.MessageLogger_cfi')

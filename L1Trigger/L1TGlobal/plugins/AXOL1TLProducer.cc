@@ -93,7 +93,7 @@ AXOL1TLProducer::AXOL1TLProducer(const ParameterSet& iConfig)
   egToken = consumes<l1t::EGammaBxCollection>(iConfig.getParameter<InputTag>("egInputTag"));
   muToken = consumes<l1t::MuonBxCollection>(iConfig.getParameter<InputTag>("muInputTag"));
   jetToken = consumes<l1t::JetBxCollection>(iConfig.getParameter<InputTag>("jetInputTag"));
-  etsumToken = consumes<l1t::EGammaBxCollection>(iConfig.getParameter<InputTag>("etsumInputTag"));
+  etsumToken = consumes<l1t::EtSumBxCollection>(iConfig.getParameter<InputTag>("etsumInputTag"));
 
   // register what you produce
   produces<std::vector<float>>("anomalyInput");
