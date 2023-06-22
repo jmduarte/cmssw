@@ -22,7 +22,10 @@ simGtDigis = L1Trigger.GlobalTrigger.gtDigis_cfi.gtDigis.clone(
         'simCastorTechTrigDigis'
     ]
 )
-SimL1TGlobalTask = cms.Task(simGtDigis)
+from AXOL1TL_cfi.py import * #import AXOL1TL_emulation
+# SimL1TGlobalTask = cms.Task(simGtDigis)
+SimL1TGlobalTask = cms.Task(AXOL1TL_emulation, simGtDigis)
+
 SimL1TGlobal = cms.Sequence(SimL1TGlobalTask)
 
 #
