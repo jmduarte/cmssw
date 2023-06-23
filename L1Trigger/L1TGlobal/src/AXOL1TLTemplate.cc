@@ -5,26 +5,24 @@
 #include <iostream>
 #include <iomanip>
 
-AXOL1TLTemplate::AXOL1TLTemplate() : ExternalCondition() { m_condCategory = l1t::CondAXOL1TL; }
+AXOL1TLTemplate::AXOL1TLTemplate() : GlobalCondition() { 
+  m_condCategory = l1t::CondAXOL1TL; }
 
-AXOL1TLTemplate::AXOL1TLTemplate(const std::string& cName) : ExternalCondition(cName) {
+AXOL1TLTemplate::AXOL1TLTemplate(const std::string& cName) : GlobalCondition(cName) {
   m_condCategory = l1t::CondAXOL1TL;
 }
 
-AXOL1TLTemplate::AXOL1TLTemplate(const std::string& cName, const l1t::GtConditionType& cType)
-    : ExternalCondition(cName, l1t::CondAXOL1TL, cType) {
+AXOL1TLTemplate::AXOL1TLTemplate(const std::string& cName, const l1t::GtConditionType& cType) //not sure we need cType
+    : GlobalCondition(cName, l1t::CondAXOL1TL, cType) {
   int nObjects = nrObjects();
 
-  // if (nObjects > 0) {
-  //   m_objectParameter.reserve(nObjects);
-
-  //   m_objectType.reserve(nObjects);
-  //   m_objectType.assign(nObjects, l1t::gtMuShower);
-  // }
+  if (nObjects > 0) {
+    m_objectType.reserve(nObjects);
+  }
 }
 
 // copy constructor
-AXOL1TLTemplate::AXOL1TLTemplate(const AXOL1TLTemplate& cp) : ExternalCondition(cp.m_condName) { copy(cp); }
+AXOL1TLTemplate::AXOL1TLTemplate(const AXOL1TLTemplate& cp) : GlobalCondition(cp.m_condName) { copy(cp); }
 
 // destructor
 AXOL1TLTemplate::~AXOL1TLTemplate() {
@@ -45,17 +43,14 @@ void AXOL1TLTemplate::setConditionParameter(const std::vector<ObjectParameter>& 
 void AXOL1TLTemplate::print(std::ostream& myCout) const {
   myCout << "\n  AXOL1TLTemplate print..." << std::endl;
 
-  ExternalCondition::print(myCout);
+  GlobalCondition::print(myCout);
 
   int nObjects = nrObjects();
 
   for (int i = 0; i < nObjects; i++) {
     myCout << std::endl;
     myCout << "  Template for object " << i << " [ hex ]" << std::endl;
-    // myCout << "    AXOL1TL0   = " << std::hex << m_objectParameter[i].AXOL1TL0 << std::endl;
-    // myCout << "    AXOL1TL1   = " << std::hex << m_objectParameter[i].AXOL1TL1 << std::endl;
-    // myCout << "    AXOL1TLOutOfTime0   = " << std::hex << m_objectParameter[i].AXOL1TLOutOfTime0 << std::endl;
-    // myCout << "    AXOL1TLOutOfTime1   = " << std::hex << m_objectParameter[i].AXOL1TLOutOfTime1 << std::endl;
+    myCout << "    AXOL1TLThreshold   = " << std::hex << m_objectParameter[i].AXOL1TLThreshold << std::endl;
   }
 
   // reset to decimal output

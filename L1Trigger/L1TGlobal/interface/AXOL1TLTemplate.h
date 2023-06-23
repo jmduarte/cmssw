@@ -7,6 +7,8 @@
  *
  * Description: L1 Global Trigger AXOL1TL template.
  *
+ * \author: Sven Dildick (Rice University)
+ *
  */
 
 // system include files
@@ -16,13 +18,12 @@
 // user include files
 
 //   base class
-// #include "L1Trigger/L1TGlobal/interface/GlobalCondition.h"
-#include "L1Trigger/L1TGlobal/interface/ExternalCondition.h"
+#include "L1Trigger/L1TGlobal/interface/GlobalCondition.h"
 
 // forward declarations
 
 // class declaration
-class AXOL1TLTemplate : public ExternalCondition { //external not global
+class AXOL1TLTemplate : public GlobalCondition {
 public:
   // constructor
   AXOL1TLTemplate();
@@ -42,20 +43,16 @@ public:
   // assign operator
   AXOL1TLTemplate& operator=(const AXOL1TLTemplate&);
 
-  // // typedef for a single object template
-  // struct ObjectParameter {
-  //   bool AXOL1TL_20000;
-  //   bool AXOL1TL_400;
-  //   bool AXOL1TL_4000;
-  //   bool AXOL1TL_80;
-  // };
+  // typedef for a single object template
+  struct ObjectParameter {
+    int AXOL1TLThreshold;
+  };
 
-  ///is all of this needed
 public:
   inline const std::vector<ObjectParameter>* objectParameter() const { return &m_objectParameter; }
 
-  // /// set functions
-  // void setConditionParameter(const std::vector<ObjectParameter>& objParameter);
+  /// set functions
+  void setConditionParameter(const std::vector<ObjectParameter>& objParameter);
 
   /// print the condition
   void print(std::ostream& myCout) const override;
@@ -67,8 +64,8 @@ private:
   /// copy function for copy constructor and operator=
   void copy(const AXOL1TLTemplate& cp);
 
-  // /// variables containing the parameters
-  // std::vector<ObjectParameter> m_objectParameter;
+  /// variables containing the parameters
+  std::vector<ObjectParameter> m_objectParameter;
 };
 
 #endif
