@@ -1,71 +1,81 @@
-#ifndef L1Trigger_L1TGlobal_AXOL1TLTemplate_h
-#define L1Trigger_L1TGlobal_AXOL1TLTemplate_h
+#ifndef L1Trigger_L1TGlobal_AXOL1TLCondition_h
+#define L1Trigger_L1TGlobal_AXOL1TLCondition_h
 
 /**
- * \class AXOL1TLTemplate
+ * \class AXOL1TLCondition
  *
- *
- * Description: L1 Global Trigger muon shower template.
- *
- * \author: Sven Dildick (Rice University)
- *
+ * Description: evaluation of a CondAXOL1TL condition.
  */
 
 // system include files
-#include <string>
 #include <iosfwd>
+#include <string>
 
 // user include files
-
-//   base class
-#include "L1Trigger/L1TGlobal/interface/GlobalCondition.h"
+//   base classes
+#include "L1Trigger/L1TGlobal/interface/ConditionEvaluation.h"
+#include "DataFormats/L1Trigger/interface/AXOL1TL.h"
 
 // forward declarations
+class GlobalCondition;
+class AXOL1TLTemplate;
 
-// class declaration
-class AXOL1TLTemplate : public GlobalCondition {
-public:
-  // constructor
-  AXOL1TLTemplate();
+namespace l1t {
 
-  // constructor
-  AXOL1TLTemplate(const std::string&);
+  class L1Candidate;
+  class GlobalBoard;
 
-  // constructor
-  AXOL1TLTemplate(const std::string&, const l1t::GtConditionType&);
+  // class declaration
+  class AXOL1TLCondition : public ConditionEvaluation {
+  public:
+    /// constructors
+    ///     default
+    AXOL1TLCondition();
 
-  // copy constructor
-  AXOL1TLTemplate(const AXOL1TLTemplate&);
+    ///     from base template condition (from event setup usually)
+    AXOL1TLCondition(const GlobalCondition*, const GlobalBoard*);
 
-  // destructor
-  ~AXOL1TLTemplate() override;
+    // copy constructor
+    AXOL1TLCondition(const AXOL1TLCondition&);
+    // destructor
+    ~AXOL1TLCondition() override;
 
-  // assign operator
-  AXOL1TLTemplate& operator=(const AXOL1TLTemplate&);
+    // assign operator
+    AXOL1TLCondition& operator=(const AXOL1TLCondition&);
 
-  // typedef for a single object template
-  struct ObjectParameter {
-    int  AXOL1TLThreshold;
+    /// the core function to check if the condition matches
+    const bool evaluateCondition(const int bxEval) const override;
+
+    /// print condition
+    void print(std::ostream& myCout) const override;
+
+    ///   get / set the pointer to a Condition
+    inline const AXOL1TLTemplate* gtAXOL1TLTemplate() const { return m_gtAXOL1TLTemplate; }
+
+    void setGtAXOL1TLTemplate(const AXOL1TLTemplate*);
+
+    ///   get / set the pointer to GTL
+    inline const GlobalBoard* gtGTB() const { return m_gtGTB; }
+
+  private:
+    /// copy function for copy constructor and operator=
+    void copy(const AXOL1TLCondition& cp);
+
+    /// load  candidates
+    const l1t::L1Candidate* getCandidate(const int bx, const int indexCand) const; 
+    /// load muon candidates
+    /* const l1t::AXOL1TL* getCandidate(const int bx, const int indexCand) const; */
+
+    /// function to check a single object if it matches a condition
+    const bool checkObjectParameter(const int iCondition, const l1t::L1Candidate& cand) const; 
+    /* const bool checkObjectParameter(const int iCondition, const l1t::MuonShower& cand, const unsigned int index) const; */ //muonshowers version
+
+    /// pointer to a AXOL1TLTemplate
+    const AXOL1TLTemplate* m_gtAXOL1TLTemplate;
+
+    /// pointer to uGt GlobalBoard, to be able to get the trigger objects
+    const GlobalBoard* m_uGtB;
   };
 
-public:
-  inline const std::vector<ObjectParameter>* objectParameter() const { return &m_objectParameter; }
-
-  /// set functions
-  void setConditionParameter(const std::vector<ObjectParameter>& objParameter);
-
-  /// print the condition
-  void print(std::ostream& myCout) const override;
-
-  /// output stream operator
-  friend std::ostream& operator<<(std::ostream&, const AXOL1TLTemplate&);
-
-private:
-  /// copy function for copy constructor and operator=
-  void copy(const AXOL1TLTemplate& cp);
-
-  /// variables containing the parameters
-  std::vector<ObjectParameter> m_objectParameter;
-};
-
+}  // namespace l1t
 #endif

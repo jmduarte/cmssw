@@ -69,7 +69,6 @@ namespace l1t {
 
     /// function to check a single object if it matches a condition
     const bool checkObjectParameter(const int iCondition, const l1t::MuonShower& cand, const unsigned int index) const;
-
     /// pointer to a MuonShowerTemplate
     const MuonShowerTemplate* m_gtMuonShowerTemplate;
 

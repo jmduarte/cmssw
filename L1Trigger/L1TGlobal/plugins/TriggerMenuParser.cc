@@ -125,6 +125,11 @@ void l1t::TriggerMenuParser::setVecMuonShowerTemplate(
   m_vecMuonShowerTemplate = vecMuonShowerTempl;
 }
 
+void l1t::TriggerMenuParser::setVecAXOL1TLTemplate( //new
+    const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTempl) {
+  m_vecAXOL1TLTemplate = vecAXOL1TLTempl;
+}
+
 void l1t::TriggerMenuParser::setVecCaloTemplate(const std::vector<std::vector<CaloTemplate> >& vecCaloTempl) {
   m_vecCaloTemplate = vecCaloTempl;
 }
@@ -210,6 +215,7 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
 
   m_vecMuonTemplate.resize(m_numberConditionChips);
   m_vecMuonShowerTemplate.resize(m_numberConditionChips);
+  m_vecAXOL1TLTemplate.resize(m_numberConditionChips); //new
   m_vecCaloTemplate.resize(m_numberConditionChips);
   m_vecEnergySumTemplate.resize(m_numberConditionChips);
   m_vecExternalTemplate.resize(m_numberConditionChips);
@@ -334,6 +340,10 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
           //parse Externals
         } else if (condition.getType() == esConditionType::Externals) {
           parseExternal(condition, chipNr);
+
+          //parse AXOL1TL new
+        } else if (condition.getType() == esConditionType::AXOL1TL) {
+          parseAXOL1TL(condition, chipNr);
 
           //parse CorrelationWithOverlapRemoval
         } else if (condition.getType() == esConditionType::CaloCaloCorrelationOvRm ||
@@ -2613,6 +2623,51 @@ bool l1t::TriggerMenuParser::parseExternal(L1TUtmCondition condExt, unsigned int
 
   return true;
 }
+
+//new
+bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition axol1tlCond, unsigned int chipNr) {
+  using namespace tmeventsetup;
+  std::string condition = "axol1tl";
+  std::string particle = "test-fix";
+  std::string type = l1t2string(axol1tlCond.getType());
+  std::string name = l1t2string(axol1tlCond.getName());
+
+  LogDebug("TriggerMenuParser") << " ****************************************** " << std::endl
+                                << "     (in parseAXOL1TL) " << std::endl
+                                << " condition = " << condition << std::endl
+                                << " particle  = " << particle << std::endl
+                                << " type      = " << type << std::endl
+                                << " name      = " << name << std::endl;
+
+  // create a new AXOL1TL  condition
+  AXOL1TLTemplate axol1tlCond(name);
+
+  // check that the condition does not exist already in the map
+  if (!insertConditionIntoMap(axol1tlCond, chipNr)) {
+    edm::LogError("TriggerMenuParser") << "    Error: duplicate AXOL1TL condition (" << name << ")" << std::endl;
+
+    return false;
+  }
+
+  // Define some of the quantities to store the parased information
+
+  // condition type BLW  (Do we change this to the type of AXOL1TL condition?)
+  GtConditionType cType = l1t::Type2cor;
+
+  const int nrObj = 1;
+
+  // object types and greater equal flag - filled in the loop
+  int intGEq[nrObj] = {-1, -1};
+  std::vector<GlobalObject> objType(nrObj);           //BLW do we want to define these as a different type?
+  std::vector<GtConditionCategory> condCateg(nrObj);  //BLW do we want to change these categories
+
+  // axol1tl flag and index in the cor*vector
+  const bool axol1tlFlag = true;
+  int axol1tlIndexVal[nrObj] = {-1, -1};
+
+  return false; //temp
+}
+
 
 /**
  * parseCorrelation Parse a correlation condition and
