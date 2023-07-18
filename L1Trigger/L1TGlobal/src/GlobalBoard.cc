@@ -568,7 +568,7 @@ void l1t::GlobalBoard::runGTL(const edm::Event&,
           //delete muShowerCondition;
 
         } break;
-        case CondAXOL1TL: {
+      case CondAXOL1TL: {
           AXOL1TLCondition* axol1tlCondition = new AXOL1TLCondition(itCond->second, this);
 
           axol1tlCondition->setVerbosity(m_verbosity);
