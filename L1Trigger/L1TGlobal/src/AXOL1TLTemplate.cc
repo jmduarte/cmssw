@@ -6,14 +6,14 @@
 #include <iomanip>
 
 AXOL1TLTemplate::AXOL1TLTemplate() : GlobalCondition() { 
-  m_condCategory = l1t::AXOL1TLCondition; }
+  m_condCategory = l1t::CondAXOL1TL; }
 
 AXOL1TLTemplate::AXOL1TLTemplate(const std::string& cName) : GlobalCondition(cName) {
-  m_condCategory = l1t::AXOL1TLCondition;
+  m_condCategory = l1t::CondAXOL1TL;
 }
 
 AXOL1TLTemplate::AXOL1TLTemplate(const std::string& cName, const l1t::GtConditionType& cType) //not sure we need cType
-    : GlobalCondition(cName, l1t::AXOL1TLCondition, cType) {
+    : GlobalCondition(cName, l1t::CondAXOL1TL, cType) {
   int nObjects = nrObjects();
 
   if (nObjects > 0) {

@@ -74,7 +74,7 @@ namespace l1t {
     const AXOL1TLTemplate* m_gtAXOL1TLTemplate;
 
     /// pointer to uGt GlobalBoard, to be able to get the trigger objects
-    const GlobalBoard* m_uGtB;
+    const GlobalBoard* m_gtGTB;
   };
 
 }  // namespace l1t

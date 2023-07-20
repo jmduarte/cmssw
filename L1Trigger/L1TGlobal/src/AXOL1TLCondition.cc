@@ -50,16 +50,16 @@ l1t::AXOL1TLCondition::AXOL1TLCondition() : ConditionEvaluation() {
 }
 
 //     from base template condition (from event setup usually)
-l1t::AXOL1TLCondition::AXOL1TLCondition(const GlobalCondition* AXOL1TLTemplate,
+l1t::AXOL1TLCondition::AXOL1TLCondition(const GlobalCondition* axol1tlTemplate,
 					const GlobalBoard* ptrGTB)
     : ConditionEvaluation(),
-      m_gtAXOL1TLTemplate(static_cast<const AXOL1TLTemplate*>(AXOL1TLTemplate)),
-      m_gtGTL(ptrGTB) {}
+      m_gtAXOL1TLTemplate(static_cast<const AXOL1TLTemplate*>(axol1tlTemplate)),
+      m_gtGTB(ptrGTB) {}
 
 // copy constructor
 void l1t::AXOL1TLCondition::copy(const l1t::AXOL1TLCondition& cp) {
-  m_AXOL1TLTemplate = cp.AXOL1TLTemplate();
-  m_uGtB = cp.getuGtB();
+  m_gtAXOL1TLTemplate = cp.gtAXOL1TLTemplate();
+  m_gtGTB = cp.gtGTB();
 
   m_condMaxNumberObjects = cp.condMaxNumberObjects();
   m_condLastResult = cp.condLastResult();
@@ -87,7 +87,7 @@ void l1t::AXOL1TLCondition::setGtAXOL1TLTemplate(const AXOL1TLTemplate* caloTemp
 }
 
 ///   set the pointer to uGT GlobalBoard
-void l1t::AXOL1TLCondition::setuGtB(const GlobalBoard* ptrGTB) { m_uGtB = ptrGTB; }
+void l1t::AXOL1TLCondition::setuGtB(const GlobalBoard* ptrGTB) { m_gtGTB = ptrGTB; }
 
 const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   bool condResult = false;
@@ -100,7 +100,7 @@ const bool l1t::AXOL1TLCondition::checkObjectParameter(const int iCondition, con
 
 void l1t::AXOL1TLCondition::print(std::ostream& myCout) const {
   myCout << "Dummy Print for AXOL1TLCondition" << std::endl;
-  m_gtCorrelationTemplate->print(myCout);
+  m_gtAXOL1TLTemplate->print(myCout);
 
   ConditionEvaluation::print(myCout);
 }

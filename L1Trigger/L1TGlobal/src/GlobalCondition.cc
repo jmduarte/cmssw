@@ -222,6 +222,12 @@ void GlobalCondition::print(std::ostream& myCout) const {
     }
 
     break;
+    case l1t::CondAXOL1TL: {
+      myCout << "  Condition category: "
+             << "CondAXOL1TL" << std::endl;
+    }
+
+    break;
     default: {
       myCout << "  Condition category: " << m_condCategory
              << "  - no such category defined. Check l1t::GtConditionCategory enum." << std::endl;

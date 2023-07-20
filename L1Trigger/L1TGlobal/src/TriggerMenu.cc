@@ -381,8 +381,8 @@ void TriggerMenu::setVecMuonTemplate(const std::vector<std::vector<MuonTemplate>
   m_vecMuonTemplate = vecMuonTempl;
 }
 
-void TriggerMenu::setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >& axol1tlTempl) { //new
-  m_axol1tlTemplate = axol1tlTempl;
+void TriggerMenu::setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >& AXOL1TLTempl) { //new
+  m_vecAXOL1TLTemplate = AXOL1TLTempl;
 }
 
 void TriggerMenu::setVecCaloTemplate(const std::vector<std::vector<CaloTemplate> >& vecCaloTempl) {
