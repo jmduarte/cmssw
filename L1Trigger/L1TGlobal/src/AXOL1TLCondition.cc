@@ -24,7 +24,7 @@
 
 // user include files
 //   base classes
-#include "L1Trigger/L1TGlobal/interface/CorrelationTemplate.h"
+#include "L1Trigger/L1TGlobal/interface/AXOL1TLTemplate.h"  //new
 #include "L1Trigger/L1TGlobal/interface/ConditionEvaluation.h"
 
 #include "L1Trigger/L1TGlobal/interface/MuCondition.h"

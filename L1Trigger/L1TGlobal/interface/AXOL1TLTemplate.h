@@ -7,7 +7,7 @@
  *
  * Description: L1 Global Trigger AXOL1TL template.
  *
- * \author: Sven Dildick (Rice University)
+ * \author: Melissa Quinnan (UC San Diego)
  *
  */
 
