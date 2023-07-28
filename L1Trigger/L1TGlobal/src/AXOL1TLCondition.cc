@@ -73,7 +73,7 @@ l1t::AXOL1TLCondition::AXOL1TLCondition(const l1t::AXOL1TLCondition& cp) : Condi
 // destructor
 l1t::AXOL1TLCondition::~AXOL1TLCondition() {
   // empty
-
+}
 
 // equal operator
 l1t::AXOL1TLCondition& l1t::AXOL1TLCondition::operator=(const l1t::AXOL1TLCondition& cp) {
