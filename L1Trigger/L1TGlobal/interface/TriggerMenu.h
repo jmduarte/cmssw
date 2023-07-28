@@ -36,7 +36,7 @@
 #include "L1Trigger/L1TGlobal/interface/CaloTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/EnergySumTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/ExternalTemplate.h"
-#include "L1Trigger/L1TGlobal/interface/AXOL1TLTemplate.h" //new
+#include "L1Trigger/L1TGlobal/interface/AXOL1TLTemplate.h"  //new
 #include "L1Trigger/L1TGlobal/interface/CorrelationTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/CorrelationThreeBodyTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/CorrelationWithOverlapRemovalTemplate.h"
@@ -121,9 +121,7 @@ public:
   void setVecMuonShowerTemplate(const std::vector<std::vector<MuonShowerTemplate> >&);
 
   //new
-  inline const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplate() const {
-    return m_vecAXOL1TLTemplate;
-  }
+  inline const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplate() const { return m_vecAXOL1TLTemplate; }
 
   void setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >&);
 
@@ -237,7 +235,7 @@ private:
   /// explicit, due to persistency...
   std::vector<std::vector<MuonTemplate> > m_vecMuonTemplate;
   std::vector<std::vector<MuonShowerTemplate> > m_vecMuonShowerTemplate;
-  std::vector<std::vector<AXOL1TLTemplate> > m_vecAXOL1TLTemplate; //new
+  std::vector<std::vector<AXOL1TLTemplate> > m_vecAXOL1TLTemplate;  //new
   std::vector<std::vector<CaloTemplate> > m_vecCaloTemplate;
   std::vector<std::vector<EnergySumTemplate> > m_vecEnergySumTemplate;
 

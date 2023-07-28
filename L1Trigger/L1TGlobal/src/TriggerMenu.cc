@@ -46,7 +46,7 @@ TriggerMenu::TriggerMenu(
     const std::vector<std::vector<EnergySumTemplate> >& vecEnergySumTemplateVal,
     const std::vector<std::vector<ExternalTemplate> >& vecExternalTemplateVal,
     const std::vector<std::vector<CorrelationTemplate> >& vecCorrelationTemplateVal,
-    const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplateVal, //new
+    const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplateVal,  //new
     const std::vector<std::vector<CorrelationThreeBodyTemplate> >& vecCorrelationThreeBodyTemplateVal,
     const std::vector<std::vector<CorrelationWithOverlapRemovalTemplate> >& vecCorrelationWithOverlapRemovalTemplateVal,
     const std::vector<std::vector<MuonTemplate> >& corMuonTemplateVal,
@@ -62,7 +62,7 @@ TriggerMenu::TriggerMenu(
       m_vecMuonShowerTemplate(vecMuonShowerTemplateVal),
       m_vecCaloTemplate(vecCaloTemplateVal),
       m_vecEnergySumTemplate(vecEnergySumTemplateVal),
-      m_vecAXOL1TLTemplate(vecAXOL1TLTemplateVal), //new
+      m_vecAXOL1TLTemplate(vecAXOL1TLTemplateVal),  //new
       m_vecExternalTemplate(vecExternalTemplateVal),
       m_vecCorrelationTemplate(vecCorrelationTemplateVal),
       m_vecCorrelationThreeBodyTemplate(vecCorrelationThreeBodyTemplateVal),
@@ -89,7 +89,7 @@ TriggerMenu::TriggerMenu(const TriggerMenu& rhs) {
   m_vecCaloTemplate = rhs.m_vecCaloTemplate;
   m_vecEnergySumTemplate = rhs.m_vecEnergySumTemplate;
   m_vecExternalTemplate = rhs.m_vecExternalTemplate;
-  m_vecAXOL1TLTemplate = rhs.m_vecAXOL1TLTemplate; //new
+  m_vecAXOL1TLTemplate = rhs.m_vecAXOL1TLTemplate;  //new
 
   m_vecCorrelationTemplate = rhs.m_vecCorrelationTemplate;
   m_vecCorrelationThreeBodyTemplate = rhs.m_vecCorrelationThreeBodyTemplate;
@@ -138,7 +138,7 @@ TriggerMenu& TriggerMenu::operator=(const TriggerMenu& rhs) {
     m_vecCaloTemplate = rhs.m_vecCaloTemplate;
     m_vecEnergySumTemplate = rhs.m_vecEnergySumTemplate;
     m_vecExternalTemplate = rhs.m_vecExternalTemplate;
-    m_vecAXOL1TLTemplate = rhs.m_vecAXOL1TLTemplate; //new
+    m_vecAXOL1TLTemplate = rhs.m_vecAXOL1TLTemplate;  //new
 
     m_vecCorrelationTemplate = rhs.m_vecCorrelationTemplate;
     m_vecCorrelationThreeBodyTemplate = rhs.m_vecCorrelationThreeBodyTemplate;
@@ -381,7 +381,7 @@ void TriggerMenu::setVecMuonTemplate(const std::vector<std::vector<MuonTemplate>
   m_vecMuonTemplate = vecMuonTempl;
 }
 
-void TriggerMenu::setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >& AXOL1TLTempl) { //new
+void TriggerMenu::setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >& AXOL1TLTempl) {  //new
   m_vecAXOL1TLTemplate = AXOL1TLTempl;
 }
 

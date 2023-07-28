@@ -35,7 +35,7 @@
 #include "L1Trigger/L1TGlobal/interface/EnergySumTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/ExternalTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/CorrelationTemplate.h"
-#include "L1Trigger/L1TGlobal/interface/AXOL1TLTemplate.h" //new
+#include "L1Trigger/L1TGlobal/interface/AXOL1TLTemplate.h"  //new
 #include "L1Trigger/L1TGlobal/interface/CorrelationThreeBodyTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/CorrelationWithOverlapRemovalTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/GlobalCondition.h"
@@ -48,7 +48,7 @@
 #include "L1Trigger/L1TGlobal/interface/MuCondition.h"
 #include "L1Trigger/L1TGlobal/interface/MuonShowerCondition.h"
 #include "L1Trigger/L1TGlobal/interface/CaloCondition.h"
-#include "L1Trigger/L1TGlobal/interface/AXOL1TLCondition.h" //new
+#include "L1Trigger/L1TGlobal/interface/AXOL1TLCondition.h"  //new
 #include "L1Trigger/L1TGlobal/interface/EnergySumCondition.h"
 #include "L1Trigger/L1TGlobal/interface/ExternalCondition.h"
 #include "L1Trigger/L1TGlobal/interface/CorrCondition.h"
@@ -568,7 +568,7 @@ void l1t::GlobalBoard::runGTL(const edm::Event&,
           //delete muShowerCondition;
 
         } break;
-      case CondAXOL1TL: {
+        case CondAXOL1TL: {
           AXOL1TLCondition* axol1tlCondition = new AXOL1TLCondition(itCond->second, this);
 
           axol1tlCondition->setVerbosity(m_verbosity);

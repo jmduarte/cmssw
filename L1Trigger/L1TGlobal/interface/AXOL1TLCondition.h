@@ -62,13 +62,13 @@ namespace l1t {
     void copy(const AXOL1TLCondition& cp);
 
     /// load  candidates
-    const l1t::L1Candidate* getCandidate(const int bx, const int indexCand) const; 
+    const l1t::L1Candidate* getCandidate(const int bx, const int indexCand) const;
     /// load muon candidates
     /* const l1t::AXOL1TL* getCandidate(const int bx, const int indexCand) const; */
 
     /// function to check a single object if it matches a condition
-    const bool checkObjectParameter(const int iCondition, const l1t::L1Candidate& cand) const; 
-    /* const bool checkObjectParameter(const int iCondition, const l1t::MuonShower& cand, const unsigned int index) const; */ //muonshowers version
+    const bool checkObjectParameter(const int iCondition, const l1t::L1Candidate& cand) const;
+    /* const bool checkObjectParameter(const int iCondition, const l1t::MuonShower& cand, const unsigned int index) const; */  //muonshowers version
 
     /// pointer to a AXOL1TLTemplate
     const AXOL1TLTemplate* m_gtAXOL1TLTemplate;

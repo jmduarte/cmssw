@@ -28,7 +28,7 @@
 #include "L1Trigger/L1TGlobal/interface/ConditionEvaluation.h"
 
 #include "L1Trigger/L1TGlobal/interface/MuCondition.h"
-#include "L1Trigger/L1TGlobal/interface/AXOL1TLCondition.h" //new
+#include "L1Trigger/L1TGlobal/interface/AXOL1TLCondition.h"  //new
 #include "L1Trigger/L1TGlobal/interface/CaloCondition.h"
 #include "L1Trigger/L1TGlobal/interface/EnergySumCondition.h"
 #include "L1Trigger/L1TGlobal/interface/MuonTemplate.h"
@@ -50,8 +50,7 @@ l1t::AXOL1TLCondition::AXOL1TLCondition() : ConditionEvaluation() {
 }
 
 //     from base template condition (from event setup usually)
-l1t::AXOL1TLCondition::AXOL1TLCondition(const GlobalCondition* axol1tlTemplate,
-					const GlobalBoard* ptrGTB)
+l1t::AXOL1TLCondition::AXOL1TLCondition(const GlobalCondition* axol1tlTemplate, const GlobalBoard* ptrGTB)
     : ConditionEvaluation(),
       m_gtAXOL1TLTemplate(static_cast<const AXOL1TLTemplate*>(axol1tlTemplate)),
       m_gtGTB(ptrGTB) {}
@@ -82,9 +81,7 @@ l1t::AXOL1TLCondition& l1t::AXOL1TLCondition::operator=(const l1t::AXOL1TLCondit
 }
 
 // methods
-void l1t::AXOL1TLCondition::setGtAXOL1TLTemplate(const AXOL1TLTemplate* caloTempl) {
-  m_gtAXOL1TLTemplate = caloTempl;
-}
+void l1t::AXOL1TLCondition::setGtAXOL1TLTemplate(const AXOL1TLTemplate* caloTempl) { m_gtAXOL1TLTemplate = caloTempl; }
 
 ///   set the pointer to uGT GlobalBoard
 void l1t::AXOL1TLCondition::setuGtB(const GlobalBoard* ptrGTB) { m_gtGTB = ptrGTB; }

@@ -125,7 +125,7 @@ void l1t::TriggerMenuParser::setVecMuonShowerTemplate(
   m_vecMuonShowerTemplate = vecMuonShowerTempl;
 }
 
-void l1t::TriggerMenuParser::setVecAXOL1TLTemplate( //new
+void l1t::TriggerMenuParser::setVecAXOL1TLTemplate(  //new
     const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTempl) {
   m_vecAXOL1TLTemplate = vecAXOL1TLTempl;
 }
@@ -215,7 +215,7 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
 
   m_vecMuonTemplate.resize(m_numberConditionChips);
   m_vecMuonShowerTemplate.resize(m_numberConditionChips);
-  m_vecAXOL1TLTemplate.resize(m_numberConditionChips); //new
+  m_vecAXOL1TLTemplate.resize(m_numberConditionChips);  //new
   m_vecCaloTemplate.resize(m_numberConditionChips);
   m_vecEnergySumTemplate.resize(m_numberConditionChips);
   m_vecExternalTemplate.resize(m_numberConditionChips);
@@ -2665,9 +2665,8 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition axol1tlCond, unsigned 
   const bool axol1tlFlag = true;
   int axol1tlIndexVal[nrObj] = {-1, -1};
 
-  return false; //temp
+  return false;  //temp
 }
-
 
 /**
  * parseCorrelation Parse a correlation condition and
