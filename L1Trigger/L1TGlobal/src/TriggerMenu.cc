@@ -62,8 +62,8 @@ TriggerMenu::TriggerMenu(
       m_vecMuonShowerTemplate(vecMuonShowerTemplateVal),
       m_vecCaloTemplate(vecCaloTemplateVal),
       m_vecEnergySumTemplate(vecEnergySumTemplateVal),
-      m_vecAXOL1TLTemplate(vecAXOL1TLTemplateVal),  //new
-      m_vecExternalTemplate(vecExternalTemplateVal),
+      m_vecExternalTemplate(vecExternalTemplateVal)l),
+      m_vecm_vecAXOL1TLTemplate(vecAXOL1TLTemplateVal)w
       m_vecCorrelationTemplate(vecCorrelationTemplateVal),
       m_vecCorrelationThreeBodyTemplate(vecCorrelationThreeBodyTemplateVal),
       m_vecCorrelationWithOverlapRemovalTemplate(vecCorrelationWithOverlapRemovalTemplateVal),
