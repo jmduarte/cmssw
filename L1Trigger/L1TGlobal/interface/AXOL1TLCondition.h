@@ -58,6 +58,8 @@ namespace l1t {
     ///   get / set the pointer to GTL
     inline const GlobalBoard* gtGTB() const { return m_gtGTB; }
 
+    void setuGtB(const GlobalBoard*);
+
   private:
     /// copy function for copy constructor and operator=
     void copy(const AXOL1TLCondition& cp);

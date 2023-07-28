@@ -45,8 +45,8 @@ TriggerMenu::TriggerMenu(
     const std::vector<std::vector<CaloTemplate> >& vecCaloTemplateVal,
     const std::vector<std::vector<EnergySumTemplate> >& vecEnergySumTemplateVal,
     const std::vector<std::vector<ExternalTemplate> >& vecExternalTemplateVal,
-    const std::vector<std::vector<CorrelationTemplate> >& vecCorrelationTemplateVal,
     const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplateVal,  //new
+    const std::vector<std::vector<CorrelationTemplate> >& vecCorrelationTemplateVal,
     const std::vector<std::vector<CorrelationThreeBodyTemplate> >& vecCorrelationThreeBodyTemplateVal,
     const std::vector<std::vector<CorrelationWithOverlapRemovalTemplate> >& vecCorrelationWithOverlapRemovalTemplateVal,
     const std::vector<std::vector<MuonTemplate> >& corMuonTemplateVal,
@@ -381,8 +381,8 @@ void TriggerMenu::setVecMuonTemplate(const std::vector<std::vector<MuonTemplate>
   m_vecMuonTemplate = vecMuonTempl;
 }
 
-void TriggerMenu::setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >& AXOL1TLTempl) {  //new
-  m_vecAXOL1TLTemplate = AXOL1TLTempl;
+void TriggerMenu::setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTempl) {  //new
+  m_vecAXOL1TLTemplate = vecAXOL1TLTempl;
 }
 
 void TriggerMenu::setVecCaloTemplate(const std::vector<std::vector<CaloTemplate> >& vecCaloTempl) {

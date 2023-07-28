@@ -370,6 +370,7 @@ void L1TGlobalProducer::produce(edm::Event& iEvent, const edm::EventSetup& evSet
                                                gtParser.vecCaloTemplate(),
                                                gtParser.vecEnergySumTemplate(),
                                                gtParser.vecExternalTemplate(),
+                                               gtParser.vecAXOL1TLTemplate(),
                                                gtParser.vecCorrelationTemplate(),
                                                gtParser.vecCorrelationThreeBodyTemplate(),
                                                gtParser.vecCorrelationWithOverlapRemovalTemplate(),

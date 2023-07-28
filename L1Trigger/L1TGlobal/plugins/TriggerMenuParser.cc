@@ -342,7 +342,8 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
           parseExternal(condition, chipNr);
 
           //parse AXOL1TL new
-        } else if (condition.getType() == esConditionType::AXOL1TL) {
+          //note naming convention here: https://gitlab.cern.ch/cms-l1t-utm/utm/-/blob/utm_0.11.2/tmEventSetup/include/utm/tmEventSetup/esTypes.hh#L213
+        } else if (condition.getType() == esConditionType::AnomalyDetectionTrigger) {
           parseAXOL1TL(condition, chipNr);
 
           //parse CorrelationWithOverlapRemoval
@@ -2625,12 +2626,12 @@ bool l1t::TriggerMenuParser::parseExternal(L1TUtmCondition condExt, unsigned int
 }
 
 //new
-bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition axol1tlCond, unsigned int chipNr) {
+bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition adCond, unsigned int chipNr) {
   using namespace tmeventsetup;
   std::string condition = "axol1tl";
   std::string particle = "test-fix";
-  std::string type = l1t2string(axol1tlCond.getType());
-  std::string name = l1t2string(axol1tlCond.getName());
+  std::string type = l1t2string(adCond.getType());
+  std::string name = l1t2string(adCond.getName());
 
   LogDebug("TriggerMenuParser") << " ****************************************** " << std::endl
                                 << "     (in parseAXOL1TL) " << std::endl
@@ -2657,13 +2658,13 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition axol1tlCond, unsigned 
   const int nrObj = 1;
 
   // object types and greater equal flag - filled in the loop
-  int intGEq[nrObj] = {-1, -1};
+  int intGEq[nrObj] = {-1};
   std::vector<GlobalObject> objType(nrObj);           //BLW do we want to define these as a different type?
   std::vector<GtConditionCategory> condCateg(nrObj);  //BLW do we want to change these categories
 
   // axol1tl flag and index in the cor*vector
   const bool axol1tlFlag = true;
-  int axol1tlIndexVal[nrObj] = {-1, -1};
+  int axol1tlIndexVal[nrObj] = {-1};
 
   return false;  //temp
 }

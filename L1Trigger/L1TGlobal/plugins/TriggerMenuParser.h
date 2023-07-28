@@ -134,8 +134,8 @@ namespace l1t {
     void setVecMuonShowerTemplate(const std::vector<std::vector<MuonShowerTemplate> >&);
 
     //new
-    inline const std::vector<std::vector<AXOL1TLTemplate> >& axol1tlTemplate() const { return m_axol1tlTemplate; }
-    void setAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >&);
+    inline const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplate() const { return m_vecAXOL1TLTemplate; }
+    void setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >&);
 
     //
     inline const std::vector<std::vector<CaloTemplate> >& vecCaloTemplate() const { return m_vecCaloTemplate; }
@@ -403,7 +403,7 @@ namespace l1t {
     /// explicit, due to persistency...
     std::vector<std::vector<MuonTemplate> > m_vecMuonTemplate;
     std::vector<std::vector<MuonShowerTemplate> > m_vecMuonShowerTemplate;
-    std::vector<std::vector<AXOL1TLTemplate> > m_axol1tlTemplate;  //new
+    std::vector<std::vector<AXOL1TLTemplate> > m_vecAXOL1TLTemplate;  //new
     std::vector<std::vector<CaloTemplate> > m_vecCaloTemplate;
     std::vector<std::vector<EnergySumTemplate> > m_vecEnergySumTemplate;
     std::vector<std::vector<ExternalTemplate> > m_vecExternalTemplate;
