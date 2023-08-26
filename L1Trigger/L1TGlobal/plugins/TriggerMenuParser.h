@@ -40,6 +40,7 @@
 #include "L1Trigger/L1TGlobal/interface/CorrelationThreeBodyTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/CorrelationWithOverlapRemovalTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/ExternalTemplate.h"
+#include "L1Trigger/L1TGlobal/interface/AXOL1TLTemplate.h"  //new
 
 #include "L1Trigger/L1TGlobal/interface/GlobalScales.h"
 
@@ -131,6 +132,10 @@ namespace l1t {
       return m_vecMuonShowerTemplate;
     }
     void setVecMuonShowerTemplate(const std::vector<std::vector<MuonShowerTemplate> >&);
+
+    //new
+    inline const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplate() const { return m_vecAXOL1TLTemplate; }
+    void setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >&);
 
     //
     inline const std::vector<std::vector<CaloTemplate> >& vecCaloTemplate() const { return m_vecCaloTemplate; }
@@ -296,6 +301,9 @@ namespace l1t {
 
     bool parseExternal(L1TUtmCondition condExt, unsigned int chipNr = 0);
 
+    //new
+    bool parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned int chipNr = 0);
+
     /// parse a correlation condition
     bool parseCorrelation(L1TUtmCondition corrCond, unsigned int chipNr = 0);
 
@@ -395,6 +403,7 @@ namespace l1t {
     /// explicit, due to persistency...
     std::vector<std::vector<MuonTemplate> > m_vecMuonTemplate;
     std::vector<std::vector<MuonShowerTemplate> > m_vecMuonShowerTemplate;
+    std::vector<std::vector<AXOL1TLTemplate> > m_vecAXOL1TLTemplate;  //new
     std::vector<std::vector<CaloTemplate> > m_vecCaloTemplate;
     std::vector<std::vector<EnergySumTemplate> > m_vecEnergySumTemplate;
     std::vector<std::vector<ExternalTemplate> > m_vecExternalTemplate;

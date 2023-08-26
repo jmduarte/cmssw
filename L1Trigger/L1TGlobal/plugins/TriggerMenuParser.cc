@@ -1,4 +1,4 @@
-/**
+ /**
  * \class TriggerMenuParser
  *
  *
@@ -125,6 +125,11 @@ void l1t::TriggerMenuParser::setVecMuonShowerTemplate(
   m_vecMuonShowerTemplate = vecMuonShowerTempl;
 }
 
+void l1t::TriggerMenuParser::setVecAXOL1TLTemplate(  //new
+    const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTempl) {
+  m_vecAXOL1TLTemplate = vecAXOL1TLTempl;
+}
+
 void l1t::TriggerMenuParser::setVecCaloTemplate(const std::vector<std::vector<CaloTemplate> >& vecCaloTempl) {
   m_vecCaloTemplate = vecCaloTempl;
 }
@@ -210,6 +215,7 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
 
   m_vecMuonTemplate.resize(m_numberConditionChips);
   m_vecMuonShowerTemplate.resize(m_numberConditionChips);
+  m_vecAXOL1TLTemplate.resize(m_numberConditionChips);  //new
   m_vecCaloTemplate.resize(m_numberConditionChips);
   m_vecEnergySumTemplate.resize(m_numberConditionChips);
   m_vecExternalTemplate.resize(m_numberConditionChips);
@@ -334,6 +340,11 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
           //parse Externals
         } else if (condition.getType() == esConditionType::Externals) {
           parseExternal(condition, chipNr);
+
+          //parse AXOL1TL new
+          //note naming convention here: https://gitlab.cern.ch/cms-l1t-utm/utm/-/blob/utm_0.11.2/tmEventSetup/include/utm/tmEventSetup/esTypes.hh#L213
+        } else if (condition.getType() == esConditionType::AnomalyDetectionTrigger) {
+          parseAXOL1TL(condition, chipNr);
 
           //parse CorrelationWithOverlapRemoval
         } else if (condition.getType() == esConditionType::CaloCaloCorrelationOvRm ||
@@ -2610,6 +2621,106 @@ bool l1t::TriggerMenuParser::parseExternal(L1TUtmCondition condExt, unsigned int
   } else {
     (m_vecExternalTemplate[chipNr]).push_back(externalCond);
   }
+
+  return true;
+}
+
+//new
+bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned int chipNr) {
+  using namespace tmeventsetup;
+
+  // get condition, particle name and particle type
+  std::string condition = "axol1tl";
+  // std::string particle = "test-fix";
+  std::string type = l1t2string(condAXOL1TL.getType());
+  std::string name = l1t2string(condAXOL1TL.getName());
+
+
+  LogDebug("TriggerMenuParser") << " ****************************************** " << std::endl
+                                << "     (in parseAXOL1TL) " << std::endl
+                                << " condition = " << condition << std::endl
+                                // << " particle  = " << particle << std::endl
+                                << " type      = " << type << std::endl
+                                << " name      = " << name << std::endl;
+
+  int nrObj = 1;
+  GtConditionType cType =  l1t::Type2cor; //is this right?
+
+  //this seems to be needed, corrCalo??
+  std::vector<AXOL1TLTemplate::ObjectParameter> objParameter(nrObj);
+
+  if (int(condAXOL1TL.getObjects().size()) != nrObj) {
+    edm::LogError("TriggerMenuParser") << " condAXOL1TL objects: nrObj = " << nrObj
+                                       << "condAXOL1TL.getObjects().size() = " << condAXOL1TL.getObjects().size() << std::endl;
+    return false;
+  }
+
+  // Get the axol1tl object
+  L1TUtmObject object = condAXOL1TL.getObjects().at(0);
+  int relativeBx = object.getBxOffset();
+
+  //needed?
+  // if (condAXOL1TL.getType() == esConditionType::AnomalyDetectionTrigger) {
+  //   // objParameter[0].MuonShower= true;   
+  //   //do I have to set switches here for jets, egammas etc?
+  // }
+
+  //Loop over cuts for this object
+  int lowerThresholdInd = 0;
+  int upperThresholdInd = -1;
+
+  const std::vector<L1TUtmCut>& cuts = condAXOL1TL.getCuts();
+  for (size_t kk = 0; kk < cuts.size(); kk++) {
+    const L1TUtmCut& cut = cuts.at(kk);
+    
+    // switch (cut.getCutType()) { //no cuttype here
+    // case esCutType::ADT:
+      lowerThresholdInd = cut.getMinimum().index;
+      upperThresholdInd = cut.getMaximum().index;
+    //   break;
+    // default:
+    //   edm::LogError("TriggerMenuParser")
+    // 	<< "AXOL1TL Cut error " << std::endl;
+    //   return false;
+    // } break; //end switch
+  } //end cut loop
+
+  //fill object params 
+  objParameter[0].minAXOL1TLThreshold = lowerThresholdInd;
+  objParameter[0].maxAXOL1TLThreshold = upperThresholdInd;
+
+  // // object types - not sure what to do here 
+  std::vector<GlobalObject> objType(nrObj);           //BLW do we want to define these as a different type?
+  // std::vector<GlobalObject> objType(nrObj, caloObjType);
+  // std::vector<GlobalObject> objType(nrObj, gtMuShower);
+
+  //not clear if this stuff is needed or not
+  // int intGEq[nrObj] = {-1};
+  // std::vector<GtConditionCategory> condCateg(nrObj);  //BLW do we want to change these categories
+  // const bool axol1tlFlag = true;
+  // int axol1tlIndexVal[nrObj] = {-1};
+
+  // create a new AXOL1TL  condition
+  AXOL1TLTemplate axol1tlCond(name);
+  axol1tlCond.setCondType(cType);
+  axol1tlCond.setObjectType(objType);
+  axol1tlCond.setCondChipNr(chipNr);
+  axol1tlCond.setCondRelativeBx(relativeBx);
+  axol1tlCond.setConditionParameter(objParameter);
+
+  if (edm::isDebugEnabled()) {
+    std::ostringstream myCoutStream;
+    axol1tlCond.print(myCoutStream);
+    LogTrace("TriggerMenuParser") << myCoutStream.str() << "\n" << std::endl;
+  }
+
+  // check that the condition does not exist already in the map
+  if (!insertConditionIntoMap(axol1tlCond, chipNr)) {
+    edm::LogError("TriggerMenuParser") << "    Error: duplicate AXOL1TL condition (" << name << ")" << std::endl;
+    return false;
+  }
+
+  (m_vecAXOL1TLTemplate[chipNr]).push_back(axol1tlCond);
 
   return true;
 }

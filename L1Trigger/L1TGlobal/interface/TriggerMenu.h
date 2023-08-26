@@ -36,6 +36,7 @@
 #include "L1Trigger/L1TGlobal/interface/CaloTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/EnergySumTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/ExternalTemplate.h"
+#include "L1Trigger/L1TGlobal/interface/AXOL1TLTemplate.h"  //new
 #include "L1Trigger/L1TGlobal/interface/CorrelationTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/CorrelationThreeBodyTemplate.h"
 #include "L1Trigger/L1TGlobal/interface/CorrelationWithOverlapRemovalTemplate.h"
@@ -58,6 +59,7 @@ public:
               const std::vector<std::vector<CaloTemplate> >&,
               const std::vector<std::vector<EnergySumTemplate> >&,
               const std::vector<std::vector<ExternalTemplate> >&,
+              const std::vector<std::vector<AXOL1TLTemplate> >&,
               const std::vector<std::vector<CorrelationTemplate> >&,
               const std::vector<std::vector<CorrelationThreeBodyTemplate> >&,
               const std::vector<std::vector<CorrelationWithOverlapRemovalTemplate> >&,
@@ -135,6 +137,11 @@ public:
   }
 
   void setVecExternalTemplate(const std::vector<std::vector<ExternalTemplate> >&);
+
+  //new
+  inline const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplate() const { return m_vecAXOL1TLTemplate; }
+
+  void setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >&);
 
   //
   inline const std::vector<std::vector<CorrelationTemplate> >& vecCorrelationTemplate() const {
@@ -230,9 +237,8 @@ private:
   std::vector<std::vector<MuonShowerTemplate> > m_vecMuonShowerTemplate;
   std::vector<std::vector<CaloTemplate> > m_vecCaloTemplate;
   std::vector<std::vector<EnergySumTemplate> > m_vecEnergySumTemplate;
-
   std::vector<std::vector<ExternalTemplate> > m_vecExternalTemplate;
-
+  std::vector<std::vector<AXOL1TLTemplate> > m_vecAXOL1TLTemplate;  //new
   std::vector<std::vector<CorrelationTemplate> > m_vecCorrelationTemplate;
   std::vector<std::vector<CorrelationThreeBodyTemplate> > m_vecCorrelationThreeBodyTemplate;
   std::vector<std::vector<CorrelationWithOverlapRemovalTemplate> > m_vecCorrelationWithOverlapRemovalTemplate;

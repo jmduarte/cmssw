@@ -45,6 +45,7 @@ TriggerMenu::TriggerMenu(
     const std::vector<std::vector<CaloTemplate> >& vecCaloTemplateVal,
     const std::vector<std::vector<EnergySumTemplate> >& vecEnergySumTemplateVal,
     const std::vector<std::vector<ExternalTemplate> >& vecExternalTemplateVal,
+    const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTemplateVal,  //new
     const std::vector<std::vector<CorrelationTemplate> >& vecCorrelationTemplateVal,
     const std::vector<std::vector<CorrelationThreeBodyTemplate> >& vecCorrelationThreeBodyTemplateVal,
     const std::vector<std::vector<CorrelationWithOverlapRemovalTemplate> >& vecCorrelationWithOverlapRemovalTemplateVal,
@@ -62,6 +63,7 @@ TriggerMenu::TriggerMenu(
       m_vecCaloTemplate(vecCaloTemplateVal),
       m_vecEnergySumTemplate(vecEnergySumTemplateVal),
       m_vecExternalTemplate(vecExternalTemplateVal),
+      m_vecAXOL1TLTemplate(vecAXOL1TLTemplateVal),
       m_vecCorrelationTemplate(vecCorrelationTemplateVal),
       m_vecCorrelationThreeBodyTemplate(vecCorrelationThreeBodyTemplateVal),
       m_vecCorrelationWithOverlapRemovalTemplate(vecCorrelationWithOverlapRemovalTemplateVal),
@@ -87,6 +89,7 @@ TriggerMenu::TriggerMenu(const TriggerMenu& rhs) {
   m_vecCaloTemplate = rhs.m_vecCaloTemplate;
   m_vecEnergySumTemplate = rhs.m_vecEnergySumTemplate;
   m_vecExternalTemplate = rhs.m_vecExternalTemplate;
+  m_vecAXOL1TLTemplate = rhs.m_vecAXOL1TLTemplate;  //new
 
   m_vecCorrelationTemplate = rhs.m_vecCorrelationTemplate;
   m_vecCorrelationThreeBodyTemplate = rhs.m_vecCorrelationThreeBodyTemplate;
@@ -135,6 +138,7 @@ TriggerMenu& TriggerMenu::operator=(const TriggerMenu& rhs) {
     m_vecCaloTemplate = rhs.m_vecCaloTemplate;
     m_vecEnergySumTemplate = rhs.m_vecEnergySumTemplate;
     m_vecExternalTemplate = rhs.m_vecExternalTemplate;
+    m_vecAXOL1TLTemplate = rhs.m_vecAXOL1TLTemplate;  //new
 
     m_vecCorrelationTemplate = rhs.m_vecCorrelationTemplate;
     m_vecCorrelationThreeBodyTemplate = rhs.m_vecCorrelationThreeBodyTemplate;
@@ -208,6 +212,26 @@ void TriggerMenu::buildGtConditionMap() {
     chipNr++;
 
     for (std::vector<MuonShowerTemplate>::iterator itCond = itCondOnChip->begin(); itCond != itCondOnChip->end();
+         itCond++) {
+      (m_conditionMap.at(chipNr))[itCond->condName()] = &(*itCond);
+    }
+  }
+
+  //new
+  size_t vecAXOL1TLSize = m_vecAXOL1TLTemplate.size();
+  if (condMapSize < vecAXOL1TLSize) {
+    m_conditionMap.resize(vecAXOL1TLSize);
+    condMapSize = m_conditionMap.size();
+  }
+
+  chipNr = -1;
+
+  for (std::vector<std::vector<AXOL1TLTemplate> >::iterator itCondOnChip = m_vecAXOL1TLTemplate.begin();
+       itCondOnChip != m_vecAXOL1TLTemplate.end();
+       itCondOnChip++) {
+    chipNr++;
+
+    for (std::vector<AXOL1TLTemplate>::iterator itCond = itCondOnChip->begin(); itCond != itCondOnChip->end();
          itCond++) {
       (m_conditionMap.at(chipNr))[itCond->condName()] = &(*itCond);
     }
@@ -355,6 +379,10 @@ void TriggerMenu::setGtScales(const l1t::GlobalScales& scales) { m_gtScales = sc
 // get / set the vectors containing the conditions
 void TriggerMenu::setVecMuonTemplate(const std::vector<std::vector<MuonTemplate> >& vecMuonTempl) {
   m_vecMuonTemplate = vecMuonTempl;
+}
+
+void TriggerMenu::setVecAXOL1TLTemplate(const std::vector<std::vector<AXOL1TLTemplate> >& vecAXOL1TLTempl) {  //new
+  m_vecAXOL1TLTemplate = vecAXOL1TLTempl;
 }
 
 void TriggerMenu::setVecCaloTemplate(const std::vector<std::vector<CaloTemplate> >& vecCaloTempl) {

@@ -101,6 +101,7 @@ namespace l1t {
     CondCorrelationWithOverlapRemoval,
     CondCorrelationThreeBody,
     CondMuonShower,
+    CondAXOL1TL,
     GtConditionCategoryInvalid = -1
   };
 
