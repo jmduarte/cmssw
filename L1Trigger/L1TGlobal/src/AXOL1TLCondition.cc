@@ -97,8 +97,9 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   LogDebug("AXOL1TLCondition") << "Considering BX " << useBx << std::endl;
 
   //HLS4ML stuff
-  LogDebug("AXOL1TLCondition") << "loading model... " << std::endl;
-  hls4mlEmulator::ModelLoader loader;
+  std::string AXOL1TLmodelversion = "GTADModel_v1"; //maybe put the version in simGtStage2Digis_cfi.py instead?
+  LogDebug("AXOL1TLCondition") << "loading model... "<< AXOL1TLmodelversion << std::endl;
+  hls4mlEmulator::ModelLoader loader(AXOL1TLmodelversion);
   std::shared_ptr<hls4mlEmulator::Model> model;
   LogDebug("AXOL1TLCondition") << "model loaded! " << std::endl;
 
