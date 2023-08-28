@@ -67,6 +67,7 @@ void l1t::AXOL1TLCondition::copy(const l1t::AXOL1TLCondition& cp) {
   m_combinationsInCond = cp.getCombinationsInCond();
 
   m_verbosity = cp.m_verbosity;
+
 }
 
 l1t::AXOL1TLCondition::AXOL1TLCondition(const l1t::AXOL1TLCondition& cp) : ConditionEvaluation() { copy(cp); }
@@ -101,6 +102,7 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   LogDebug("AXOL1TLCondition") << "loading model... "<< AXOL1TLmodelversion << std::endl;
   hls4mlEmulator::ModelLoader loader(AXOL1TLmodelversion);
   std::shared_ptr<hls4mlEmulator::Model> model;
+  model = loader.load_model();
   LogDebug("AXOL1TLCondition") << "model loaded! " << std::endl;
 
   // //pointers to objects
