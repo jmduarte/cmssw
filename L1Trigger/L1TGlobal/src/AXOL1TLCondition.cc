@@ -123,13 +123,13 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   const int EtSumVecSize = NEtSums*3; //so 3
 
   //total # inputs in vector is (4+10+4+1)*3 = 57
-  int NInputs = 57;
+  const int NInputs = 57;
 
   //define zero
   ap_fixed<18, 13> fillzero = 0.0;
 
   //AD vector declaration, will fill later 
-  ap_fixed<18, 13> ADModelInput[NInputs]; 
+  ap_fixed<18, 13> ADModelInput[NInputs] = {};
 
   //initializing vector by type for my sanity
   ap_fixed<18, 13> MuInput[MuVecSize];
