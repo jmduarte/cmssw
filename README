@@ -1,1 +1,48 @@
 Introduction to CMSSW: http://cms-sw.github.io
+
+AXOL1TL cmssw emulator
+
+Setup from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideL1TStage2Instructions
+Overview slides with links: https://docs.google.com/presentation/d/1us7ZHD0qsRET7nsgcaYoY1Re9RO6hBytEUvEhTobvK8/edit#slide=id.gc10cb5fa9b_0_53
+git compare: https://github.com/quinnanm/cmssw/compare/from-CMSSW_13_2_0_pre3...quinnanm:cmssw:emulator_aug23
+
+Setup
+
+
+
+```
+cmsrel CMSSW_13_2_0_pre3
+cd CMSSW_13_2_0_pre3/src
+cmsenv
+git cms-init
+git remote add cms-l1t-offline git@github.com:cms-l1t-offline/cmssw.git
+git fetch cms-l1t-offline l1t-integration-CMSSW_13_2_0_pre3
+git cms-merge-topic -u cms-l1t-offline:l1t-integration-v164-CMSSW_13_2_0_pre3
+git clone https://github.com/cms-l1t-offline/L1Trigger-L1TCalorimeter.git L1Trigger/L1TCalorimeter/data
+
+
+git cms-addpkg L1Trigger/L1TCalorimeter
+git cms-addpkg L1Trigger/L1TNtuples 
+git cms-addpkg L1Trigger/Configuration
+git cms-addpkg L1Trigger/L1TGlobal 
+git cms-addpkg L1Trigger/L1TCommon
+
+mkdir -p L1Trigger/L1TGlobal/data/Luminosity/startup/
+cd L1Trigger/L1TGlobal/data/Luminosity/startup/
+wget https://raw.githubusercontent.com/cms-l1-dpg/L1MenuRun3/master/development/L1Menu_Collisions2023_v1_3_0/L1Menu_Collisions2023_v1_3_0.xml
+cd ../../../../../
+
+#changed name of xml file to L1Menu_Collisions2023_v1_3_0 in L1Trigger/Configuration/python/customiseUtils.py
+
+git cms-checkdeps -A -a
+
+scram b -j 8
+
+git checkout emulator_aug23
+
+#for pushing changes
+
+git push  my-cmssw emulator_aug23
+```
+
+
