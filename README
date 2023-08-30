@@ -11,7 +11,9 @@ Setup
 
 
 
-```cmsrel CMSSW_13_2_0_pre3
+```
+
+cmsrel CMSSW_13_2_0_pre3
 cd CMSSW_13_2_0_pre3/src
 cmsenv
 git cms-init
