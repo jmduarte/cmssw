@@ -90,6 +90,7 @@ namespace {
       {"l1t::CondCalo", l1t::CondCalo},
       {"l1t::CondEnergySum", l1t::CondEnergySum},
       {"l1t::CondCorrelation", l1t::CondCorrelation},
+      {"l1t::CondAXOL1TL", l1t::CondAXOL1TL},
       {"l1t::CondCorrelationThreeBody", l1t::CondCorrelationThreeBody},
       {"l1t::CondCorrelationWithOverlapRemoval", l1t::CondCorrelationWithOverlapRemoval},
       {"l1t::CondExternal", l1t::CondExternal},

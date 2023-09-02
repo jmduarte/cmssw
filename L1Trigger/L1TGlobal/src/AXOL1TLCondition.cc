@@ -95,15 +95,15 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   int nObjInCond = m_gtAXOL1TLTemplate->nrObjects();
 
   int useBx = bxEval + m_gtAXOL1TLTemplate->condRelativeBx();
-  LogDebug("AXOL1TLCondition") << "Considering BX " << useBx << std::endl;
+  cout << "Considering BX " << useBx << std::endl;
 
   //HLS4ML stuff
   std::string AXOL1TLmodelversion = "GTADModel_v1"; //maybe put the version in simGtStage2Digis_cfi.py instead?
-  LogDebug("AXOL1TLCondition") << "loading model... "<< AXOL1TLmodelversion << std::endl;
+  cout << "loading model... "<< AXOL1TLmodelversion << std::endl;
   hls4mlEmulator::ModelLoader loader(AXOL1TLmodelversion);
   std::shared_ptr<hls4mlEmulator::Model> model;
   model = loader.load_model();
-  LogDebug("AXOL1TLCondition") << "model loaded! " << std::endl;
+  cout << "model loaded! " << std::endl;
 
   // //pointers to objects
   const BXVector<const l1t::Muon*>* candMuVec = m_gtGTB->getCandL1Mu();
@@ -210,20 +210,20 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   }
 
  //debug printouts
- LogDebug("AXOL1TLCondition") << "------------------ Inputs (first element)-----------------" << std::endl;
- LogDebug("AXOL1TLCondition") << "ETSum input [0]" << EtSumInput[0] << std::endl;
- LogDebug("AXOL1TLCondition") << "Egamma input[0] " << EgammaInput[0] << std::endl;
- LogDebug("AXOL1TLCondition") << "Mu input [0]" << MuInput[0] << std::endl;
- LogDebug("AXOL1TLCondition") << "Jet input[0] " << JetInput[0] << std::endl;
- LogDebug("AXOL1TLCondition") << "input vector[0]" << ADModelInput[0] << std::endl;
+ cout << "------------------ Inputs (first element)-----------------" << std::endl;
+ cout << "ETSum input [0]" << EtSumInput[0] << std::endl;
+ cout << "Egamma input[0] " << EgammaInput[0] << std::endl;
+ cout << "Mu input [0]" << MuInput[0] << std::endl;
+ cout << "Jet input[0] " << JetInput[0] << std::endl;
+ cout << "input vector[0]" << ADModelInput[0] << std::endl;
  
- LogDebug("AXOL1TLCondition") << "------------------ Inputs (all elements)-----------------" << std::endl;
- LogDebug("AXOL1TLCondition") << "ADModelInput: [";
+ cout << "------------------ Inputs (all elements)-----------------" << std::endl;
+ cout << "ADModelInput: [";
  for (int i = 0; i < NInputs; i++) {
-   LogDebug("AXOL1TLCondition") << ADModelInput[i] << ", ";
+   cout << ADModelInput[i] << ", ";
  }
- LogDebug("AXOL1TLCondition") << "]" << std::endl;
- LogDebug("AXOL1TLCondition") << "Jet input[-1] " << JetInput[JVecSize-1] << std::endl;
+ cout << "]" << std::endl;
+ cout << "Jet input[-1] " << JetInput[JVecSize-1] << std::endl;
 
 
  //now run the inference
@@ -235,10 +235,6 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
  loss = ADModelResult.second;
  score = (loss).to_float();  //convert the fixed precision result to a c++ floating point (??)
 
- LogDebug("AXOL1TLCondition") << "------------------ Outputs -----------------" << std::endl; 
- LogDebug("AXOL1TLCondition") << "output vector" << result << std::endl;
- LogDebug("AXOL1TLCondition") << "loss" << loss << std::endl;
- LogDebug("AXOL1TLCondition") << "score" << score  << std::endl;
   
  bool passCondition = false;
 
@@ -246,14 +242,14 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
     passCondition = checkObjectParameter(i, score); 
     condResult |= passCondition;
     if (passCondition) {
-      LogDebug("AXOL1TLCondition")
+      cout
           << "===> AXOCondition::evaluateCondition, PASS! This event passed the condition." << std::endl;
  
     } else
-      LogDebug("AXOL1TLCondition")
+      cout
           << "===> AXOCondition::evaluateCondition, FAIL! This event failed the condition." << std::endl;
     }
-  LogDebug("AXOL1TLCondition") << "condResult: " << condResult << std::endl;
+  cout << "condResult: " << condResult << std::endl;
 
 
   //return result
@@ -273,16 +269,16 @@ const bool l1t::AXOL1TLCondition::checkObjectParameter(const int iCondition, con
   //may have to check that score is in the right format-convert to hex?
   const AXOL1TLTemplate::ObjectParameter objPar = (*(m_gtAXOL1TLTemplate->objectParameter()))[iCondition];
 
-  LogDebug("L1TGlobal") << "\n AXOL1TLTemplate::ObjectParameter (utm objects, checking which condition is parsed): "
-                        << std::hex << "\n\t AXOL1TL minimum = 0x " << objPar.minAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x "
-                        << std::hex << "\n\t AXOL1TL maximum = 0x " << objPar.maxAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x " << std::endl;
+  // cout << "\n AXOL1TLTemplate::ObjectParameter (utm objects, checking which condition is parsed): "
+  //                       << std::hex << "\n\t AXOL1TL minimum = 0x " << objPar.minAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x "
+  //                       << std::hex << "\n\t AXOL1TL maximum = 0x " << objPar.maxAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x " << std::endl;
 
-  LogDebug("L1TGlobal") << "\n l1t::AXOL1TL (uGT emulator bits): "
-                        << "\n\t AXOL1TL score = " << AXOL1TLscore << std::endl; //is this right?
+  // cout << "\n l1t::AXOL1TL (uGT emulator bits): "
+  //                       << "\n\t AXOL1TL score = " << AXOL1TLscore << std::endl; //is this right?
 
   // Check if passes threshold
   if (AXOL1TLscore < objPar.minAXOL1TLThreshold) {
-    LogDebug("L1TGlobal") << "\t\t event failed AXOL1TL anomaly threshold" << std::endl;
+    cout << "\t\t event failed AXOL1TL anomaly threshold" << std::endl;
     return false;
   }
   
