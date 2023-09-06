@@ -66,6 +66,7 @@ namespace l1t {
     TypeMinBiasHFM1,
     TypeETTem,
     TypeExternal,
+    TypeAXOL1TL,
     Type2corWithOverlapRemoval,
     TypeCent0,
     TypeCent1,

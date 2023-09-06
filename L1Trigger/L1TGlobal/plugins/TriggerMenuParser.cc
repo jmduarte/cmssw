@@ -2644,7 +2644,16 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned 
                                 << " name      = " << name << std::endl;
 
   int nrObj = 1;
-  GtConditionType cType =  l1t::Type2cor; //is this right?
+  GtConditionType cType = TypeAXOL1TL; //defined in GlobalDefinitions, GlobalConditions - is this right?
+  //or should it be something else?
+
+  // std::cout  << " type      = " << type << std::endl
+  // 	     << " name      = " << name << std::endl; 
+  //type?
+  // if (condAXOL1TL.getType() == esConditionType::AnomalyDetectionTrigger) {
+  //   // objParameter[0].MuonShower= true;   
+  //   //do I have to set switches here for jets, egammas etc?
+  // }
 
   //this seems to be needed, corrCalo??
   std::vector<AXOL1TLTemplate::ObjectParameter> objParameter(nrObj);
@@ -2659,13 +2668,7 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned 
   L1TUtmObject object = condAXOL1TL.getObjects().at(0);
   int relativeBx = object.getBxOffset();
 
-  //needed?
-  // if (condAXOL1TL.getType() == esConditionType::AnomalyDetectionTrigger) {
-  //   // objParameter[0].MuonShower= true;   
-  //   //do I have to set switches here for jets, egammas etc?
-  // }
-
-  //Loop over cuts for this object
+  //Loop over cuts for this  object
   int lowerThresholdInd = 0;
   int upperThresholdInd = -1;
 
@@ -2690,7 +2693,7 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned 
   objParameter[0].maxAXOL1TLThreshold = upperThresholdInd;
 
   // // object types - not sure what to do here 
-  std::vector<GlobalObject> objType(nrObj);           //BLW do we want to define these as a different type?
+  // std::vector<GlobalObject> objType(nrObj);           //BLW do we want to define these as a different type?
   // std::vector<GlobalObject> objType(nrObj, caloObjType);
   // std::vector<GlobalObject> objType(nrObj, gtMuShower);
 
@@ -2703,7 +2706,7 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned 
   // create a new AXOL1TL  condition
   AXOL1TLTemplate axol1tlCond(name);
   axol1tlCond.setCondType(cType);
-  axol1tlCond.setObjectType(objType);
+  // axol1tlCond.setObjectType(objType);
   axol1tlCond.setCondChipNr(chipNr);
   axol1tlCond.setCondRelativeBx(relativeBx);
   axol1tlCond.setConditionParameter(objParameter);

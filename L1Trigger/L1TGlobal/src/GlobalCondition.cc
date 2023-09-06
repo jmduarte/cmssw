@@ -118,6 +118,7 @@ const int GlobalCondition::nrObjects() const {
     case l1t::TypeMinBiasHFM0:
     case l1t::TypeMinBiasHFP1:
     case l1t::TypeMinBiasHFM1:
+    case l1t::TypeAXOL1TL:
     case l1t::TypeAsymEt:
     case l1t::TypeAsymHt:
     case l1t::TypeAsymEtHF:
