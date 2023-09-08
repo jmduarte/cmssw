@@ -90,10 +90,8 @@ void l1t::AXOL1TLCondition::setGtAXOL1TLTemplate(const AXOL1TLTemplate* caloTemp
 void l1t::AXOL1TLCondition::setuGtB(const GlobalBoard* ptrGTB) { m_gtGTB = ptrGTB; }
 
 const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
+
   bool condResult = false;
-
-  int nObjInCond = m_gtAXOL1TLTemplate->nrObjects();
-
   int useBx = bxEval + m_gtAXOL1TLTemplate->condRelativeBx();
   cout << "Considering BX " << useBx << std::endl;
 
@@ -233,57 +231,85 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
 
  result = ADModelResult.first;
  loss = ADModelResult.second;
- score = (loss).to_float();  //convert the fixed precision result to a c++ floating point (??)
-
-  
- bool passCondition = false;
-
-  for (int i = 0; i < nObjInCond; i++) {
-    passCondition = checkObjectParameter(i, score); 
-    condResult |= passCondition;
-    if (passCondition) {
-      cout
-          << "===> AXOCondition::evaluateCondition, PASS! This event passed the condition." << std::endl;
+ score = loss; //what is the right dataformat?
+ // score = (loss).to_integer();
+ // score = (loss).to_float();  //convert the fixed precision result to a c++ floating point (??)
  
-    } else
-      cout
-          << "===> AXOCondition::evaluateCondition, FAIL! This event failed the condition." << std::endl;
-    }
+ //number of objects/thrsholds to check
+ int iCondition = 0;   // number of conditions: there is only one
+ int nObjInCond = m_gtAXOL1TLTemplate->nrObjects();
+ 
+ if (iCondition >= nObjInCond || iCondition < 0) {
+   return false;
+ }
+ 
+ //may have to check that score is in the right format-convert to hex?
+ const AXOL1TLTemplate::ObjectParameter objPar = (*(m_gtAXOL1TLTemplate->objectParameter()))[iCondition];
+ // score = objPar.minAXOL1TLThreshold;
+
+ // Definition in CondFormats/L1TObjects/interface/L1GtCondition.h:
+ // condGEqVal indicates the operator used for the condition (>=, =): true for >=
+ bool condGEqVal = m_gtAXOL1TLTemplate->condGEq();
+
+ cout << "\n AXOL1TLTemplate::ObjectParameter (utm objects, checking which condition is parsed): "
+      << "condGEqVal: " << condGEqVal << " (true for >= )  " << std::endl
+      << "score: " << score << std::endl
+      << "nObjInCond: " << nObjInCond << std::endl
+      << "objPar.minAXOL1TLThreshold: " << objPar.minAXOL1TLThreshold << std::endl
+      << std::hex << "\n\t AXOL1TL minimum = 0x " << objPar.minAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x "
+      << std::hex << "\n\t AXOL1TL maximum = 0x " << objPar.maxAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x " << std::endl;
+
+ // for (int i = 0; i < nObjInCond; i++) { //only 1 object
+
+ bool passCondition = false;
+ //   const bool ConditionEvaluation::checkThreshold(const Type1& thresholdL,
+ //                                                  const Type1& thresholdH,
+ //                                                  const Type2& value,
+ //                                                  const bool condGEqValue) const {
+ passCondition = checkCut(objPar.minAXOL1TLThreshold, score, condGEqVal); 
+
+ condResult |= passCondition; //condresult true if passCondition true else it is false 
+ if (passCondition) {
+   cout
+     << "===> AXOCondition::evaluateCondition, PASS! This event passed the condition." << std::endl;
+ } else
+   cout
+     << "===> AXOCondition::evaluateCondition, FAIL! This event failed the condition." << std::endl;
+    // }//obj in condition loop
   cout << "condResult: " << condResult << std::endl;
 
-
   //return result
- return condResult;
+  return condResult;
 }
 
 //for condition number iCondition (threshold) check if score passes that threshold
-const bool l1t::AXOL1TLCondition::checkObjectParameter(const int iCondition, const float AXOL1TLscore) const {
+// const bool l1t::AXOL1TLCondition::checkObjectParameter(const int iCondition, const float AXOL1TLscore) const {
 
-  //number of objects/thrsholds to check
-  int nObjInCond = m_gtAXOL1TLTemplate->nrObjects();
+//   //number of objects/thrsholds to check
+//   int nObjInCond = m_gtAXOL1TLTemplate->nrObjects();
 
-  if (iCondition >= nObjInCond || iCondition < 0) {
-    return false;
-  }
+//   if (iCondition >= nObjInCond || iCondition < 0) {
+//     return false;
+//   }
 
-  //may have to check that score is in the right format-convert to hex?
-  const AXOL1TLTemplate::ObjectParameter objPar = (*(m_gtAXOL1TLTemplate->objectParameter()))[iCondition];
+//   //may have to check that score is in the right format-convert to hex?
+//   const AXOL1TLTemplate::ObjectParameter objPar = (*(m_gtAXOL1TLTemplate->objectParameter()))[iCondition];
 
-  // cout << "\n AXOL1TLTemplate::ObjectParameter (utm objects, checking which condition is parsed): "
-  //                       << std::hex << "\n\t AXOL1TL minimum = 0x " << objPar.minAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x "
-  //                       << std::hex << "\n\t AXOL1TL maximum = 0x " << objPar.maxAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x " << std::endl;
+//   cout << "\n AXOL1TLTemplate::ObjectParameter (utm objects, checking which condition is parsed): "
+//                         << std::hex << "\n\t AXOL1TL minimum = 0x " << objPar.minAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x "
+//                         << std::hex << "\n\t AXOL1TL maximum = 0x " << objPar.maxAXOL1TLThreshold << "\n\t AXOL1TL1 = 0x " << std::endl;
 
-  // cout << "\n l1t::AXOL1TL (uGT emulator bits): "
-  //                       << "\n\t AXOL1TL score = " << AXOL1TLscore << std::endl; //is this right?
+//   // cout << "\n l1t::AXOL1TL (uGT emulator bits): "
+//   //                       << "\n\t AXOL1TL score = " << AXOL1TLscore << std::endl; //is this right?
 
-  // Check if passes threshold
-  if (AXOL1TLscore < objPar.minAXOL1TLThreshold) {
-    cout << "\t\t event failed AXOL1TL anomaly threshold" << std::endl;
-    return false;
-  }
+//   // Check if passes threshold
+//   if (AXOL1TLscore < objPar.minAXOL1TLThreshold) {
+//     cout << "\t\t event failed AXOL1TL anomaly threshold" << std::endl;
+//     return false;
+//   }
   
-  return true;
-}
+//   return true;
+// }
 
 void l1t::AXOL1TLCondition::print(std::ostream& myCout) const {
   myCout << "Dummy Print for AXOL1TLCondition" << std::endl;

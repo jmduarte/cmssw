@@ -268,6 +268,7 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
       //      long hash = getHash(token);
       const L1TUtmCondition& condition = condMap.find(token)->second;
 
+      // std::cout << "CONDITION TYPE: " << condition.getType() << std:endl;
       //check to see if this condtion already exists
       if ((m_conditionMap[chipNr]).count(condition.getName()) == 0) {
         // parse Calo Conditions (EG, Jets, Taus)
@@ -344,6 +345,7 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
           //parse AXOL1TL new
           //note naming convention here: https://gitlab.cern.ch/cms-l1t-utm/utm/-/blob/utm_0.11.2/tmEventSetup/include/utm/tmEventSetup/esTypes.hh#L213
         } else if (condition.getType() == esConditionType::AnomalyDetectionTrigger) {
+	  std::cout << "PARSING AXOL1TL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
           parseAXOL1TL(condition, chipNr);
 
           //parse CorrelationWithOverlapRemoval
@@ -2635,7 +2637,6 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned 
   std::string type = l1t2string(condAXOL1TL.getType());
   std::string name = l1t2string(condAXOL1TL.getName());
 
-
   LogDebug("TriggerMenuParser") << " ****************************************** " << std::endl
                                 << "     (in parseAXOL1TL) " << std::endl
                                 << " condition = " << condition << std::endl
@@ -2645,15 +2646,10 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned 
 
   int nrObj = 1;
   GtConditionType cType = TypeAXOL1TL; //defined in GlobalDefinitions, GlobalConditions - is this right?
-  //or should it be something else?
 
-  // std::cout  << " type      = " << type << std::endl
-  // 	     << " name      = " << name << std::endl; 
-  //type?
-  // if (condAXOL1TL.getType() == esConditionType::AnomalyDetectionTrigger) {
-  //   // objParameter[0].MuonShower= true;   
-  //   //do I have to set switches here for jets, egammas etc?
-  // }
+  //object type needed? //https://gitlab.cern.ch/search?search=ADT&nav_source=navbar&project_id=4792&group_id=3256&search_code=true&repository_ref=dev-0.12.x
+  // GlobalObject AXOL1TLObjType = GlobalObject::ADT_ASCORE; 
+  // std::vector<GlobalObject> objType(nrObj, AXOL1TLObjType);
 
   //this seems to be needed, corrCalo??
   std::vector<AXOL1TLTemplate::ObjectParameter> objParameter(nrObj);
@@ -2664,49 +2660,43 @@ bool l1t::TriggerMenuParser::parseAXOL1TL(L1TUtmCondition condAXOL1TL, unsigned 
     return false;
   }
 
+  std::cout << "SIZE: " << condAXOL1TL.getObjects().size() << std::endl;
+
   // Get the axol1tl object
+  //is at(0) right?? only one object?
   L1TUtmObject object = condAXOL1TL.getObjects().at(0);
   int relativeBx = object.getBxOffset();
+  bool gEq = (object.getComparisonOperator() == esComparisonOperator::GE);
 
   //Loop over cuts for this  object
   int lowerThresholdInd = 0;
   int upperThresholdInd = -1;
 
-  const std::vector<L1TUtmCut>& cuts = condAXOL1TL.getCuts();
+  const std::vector<L1TUtmCut>& cuts = object.getCuts();
   for (size_t kk = 0; kk < cuts.size(); kk++) {
     const L1TUtmCut& cut = cuts.at(kk);
-    
-    // switch (cut.getCutType()) { //no cuttype here
-    // case esCutType::ADT:
-      lowerThresholdInd = cut.getMinimum().index;
-      upperThresholdInd = cut.getMaximum().index;
-    //   break;
-    // default:
-    //   edm::LogError("TriggerMenuParser")
-    // 	<< "AXOL1TL Cut error " << std::endl;
-    //   return false;
-    // } break; //end switch
+
+    switch (cut.getCutType()) { 
+    case esCutType::AnomalyScore:
+      std::cout << "CUT TYPE: " << cut.getCutType() << std::endl; 
+      std::cout << "CUT MAX: " << cut.getMaximum().value << " CUT MIN: " << cut.getMinimum().value << std::endl; 
+      lowerThresholdInd = cut.getMinimum().value;
+      upperThresholdInd = cut.getMaximum().value;
+      break;
+    default:
+      break; 
+    } //end switch
   } //end cut loop
 
   //fill object params 
   objParameter[0].minAXOL1TLThreshold = lowerThresholdInd;
   objParameter[0].maxAXOL1TLThreshold = upperThresholdInd;
 
-  // // object types - not sure what to do here 
-  // std::vector<GlobalObject> objType(nrObj);           //BLW do we want to define these as a different type?
-  // std::vector<GlobalObject> objType(nrObj, caloObjType);
-  // std::vector<GlobalObject> objType(nrObj, gtMuShower);
-
-  //not clear if this stuff is needed or not
-  // int intGEq[nrObj] = {-1};
-  // std::vector<GtConditionCategory> condCateg(nrObj);  //BLW do we want to change these categories
-  // const bool axol1tlFlag = true;
-  // int axol1tlIndexVal[nrObj] = {-1};
-
   // create a new AXOL1TL  condition
   AXOL1TLTemplate axol1tlCond(name);
   axol1tlCond.setCondType(cType);
   // axol1tlCond.setObjectType(objType);
+  axol1tlCond.setCondGEq(gEq);
   axol1tlCond.setCondChipNr(chipNr);
   axol1tlCond.setCondRelativeBx(relativeBx);
   axol1tlCond.setConditionParameter(objParameter);
