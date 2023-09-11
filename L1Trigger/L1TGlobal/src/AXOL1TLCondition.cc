@@ -231,9 +231,9 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
 
  result = ADModelResult.first;
  loss = ADModelResult.second;
- score = loss; //what is the right dataformat?
+ // score = loss; //what is the right dataformat?
  // score = (loss).to_integer();
- // score = (loss).to_float();  //convert the fixed precision result to a c++ floating point (??)
+ score = ((loss).to_float())/16.0;  //must check if this is the right way to get the threshold
  
  //number of objects/thrsholds to check
  int iCondition = 0;   // number of conditions: there is only one
