@@ -160,7 +160,7 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   if (NCandEtSum>0){ //check if not empty
     for (int iEtSum = 0; iEtSum < NCandEtSum; iEtSum++) {    
       if ((candEtSumVec->at(useBx, iEtSum))->getType() == l1t::EtSum::EtSumType::kMissingEt) { 
-	EtSumInput[0] = (candEtSumVec->at(useBx, iEtSum))->hwPt();
+	EtSumInput[0] = ((candEtSumVec->at(useBx, iEtSum))->hwPt())/2; //have to do hwPt/2 in order to match original et inputs
 	// EtSumInput[1] = (candEtSumVec->at(useBx, iEtSum))->hwEta(); //this one is zero, so leave it zero
 	EtSumInput[2] = (candEtSumVec->at(useBx, iEtSum))->hwPhi();
       }}}
@@ -169,27 +169,27 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   if (NCandEG>0){//check if not empty
     for (int iEG = 0; iEG < NCandEG; iEG++) {  
       if (iEG<NEgammas) { //stop if fill the Nobjects we need
-	  EgammaInput[0+(3*iEG)] = (candEGVec->at(useBx, iEG))->hwPt();   //index 0,3,6,9
-	  EgammaInput[1+(3*iEG)] = (candEGVec->at(useBx, iEG))->hwEta();  //index 1,4,7,10
-	  EgammaInput[2+(3*iEG)] = (candEGVec->at(useBx, iEG))->hwPhi();  //index 2,5,8,11
+	EgammaInput[0+(3*iEG)] = ((candEGVec->at(useBx, iEG))->hwPt())/2;   //index 0,3,6,9 //have to do hwPt/2 in order to match original et inputs
+	EgammaInput[1+(3*iEG)] = (candEGVec->at(useBx, iEG))->hwEta();  //index 1,4,7,10
+	EgammaInput[2+(3*iEG)] = (candEGVec->at(useBx, iEG))->hwPhi();  //index 2,5,8,11
 	}}}
 
   //next muons
   if (NCandMu>0){//check if not empty
     for (int iMu = 0; iMu < NCandMu; iMu++) {  
       if (iMu<NMuons) { //stop if fill the Nobjects we need
-	  MuInput[0+(3*iMu)] = (candMuVec->at(useBx, iMu))->hwPt();   //index 0,3,6,9
-	  MuInput[1+(3*iMu)] = (candMuVec->at(useBx, iMu))->hwEta();  //index 1,4,7,10
-	  MuInput[2+(3*iMu)] = (candMuVec->at(useBx, iMu))->hwPhi();  //index 2,5,8,11
+	MuInput[0+(3*iMu)] = ((candMuVec->at(useBx, iMu))->hwPt())/2;   //index 0,3,6,9 //have to do hwPt/2 in order to match original et inputs
+	MuInput[1+(3*iMu)] = (candMuVec->at(useBx, iMu))->hwEta();  //index 1,4,7,10
+	MuInput[2+(3*iMu)] = (candMuVec->at(useBx, iMu))->hwPhi();  //index 2,5,8,11
 	}}}
 
   //next jets
   if (NCandJet>0){//check if not empty
     for (int iJet = 0; iJet < NCandJet; iJet++) {  
       if (iJet<NJets) { //stop if fill the Nobjects we need
-	  JetInput[0+(3*iJet)] = (candJetVec->at(useBx, iJet))->hwPt();   //index 0,3,6,9...27
-	  JetInput[1+(3*iJet)] = (candJetVec->at(useBx, iJet))->hwEta();  //index 1,4,7,10...28
-	  JetInput[2+(3*iJet)] = (candJetVec->at(useBx, iJet))->hwPhi();  //index 2,5,8,11...29
+	JetInput[0+(3*iJet)] = ((candJetVec->at(useBx, iJet))->hwPt())/2;   //index 0,3,6,9...27 //have to do hwPt/2 in order to match original et inputs
+	JetInput[1+(3*iJet)] = (candJetVec->at(useBx, iJet))->hwEta();  //index 1,4,7,10...28
+	JetInput[2+(3*iJet)] = (candJetVec->at(useBx, iJet))->hwPhi();  //index 2,5,8,11...29
 	}}}
 
   //now put it all together-> EtSum+EGamma+Muon+Jet into ADModelInput
@@ -208,12 +208,12 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
   }
 
  //debug printouts
- cout << "------------------ Inputs (first element)-----------------" << std::endl;
- cout << "ETSum input [0]" << EtSumInput[0] << std::endl;
- cout << "Egamma input[0] " << EgammaInput[0] << std::endl;
- cout << "Mu input [0]" << MuInput[0] << std::endl;
- cout << "Jet input[0] " << JetInput[0] << std::endl;
- cout << "input vector[0]" << ADModelInput[0] << std::endl;
+ // cout << "------------------ Inputs (first element)-----------------" << std::endl;
+ // cout << "ETSum input [0]" << EtSumInput[0] << std::endl;
+ // cout << "Egamma input[0] " << EgammaInput[0] << std::endl;
+ // cout << "Mu input [0]" << MuInput[0] << std::endl;
+ // cout << "Jet input[0] " << JetInput[0] << std::endl;
+ // cout << "input vector[0]" << ADModelInput[0] << std::endl;
  
  cout << "------------------ Inputs (all elements)-----------------" << std::endl;
  cout << "ADModelInput: [";
@@ -221,8 +221,7 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
    cout << ADModelInput[i] << ", ";
  }
  cout << "]" << std::endl;
- cout << "Jet input[-1] " << JetInput[JVecSize-1] << std::endl;
-
+ // cout << "Jet input[-1] " << JetInput[JVecSize-1] << std::endl;
 
  //now run the inference
  model->prepare_input(ADModelInput);  //scaling internal here
@@ -233,8 +232,20 @@ const bool l1t::AXOL1TLCondition::evaluateCondition(const int bxEval) const {
  loss = ADModelResult.second;
  // score = loss; //what is the right dataformat?
  // score = (loss).to_integer();
- score = ((loss).to_float())/16.0;  //must check if this is the right way to get the threshold
- 
+ score = ((loss).to_float())*16.0;  //must check if this is the right way to get the threshold
+
+ cout << "------------------ outputs -----------------" << std::endl;
+ int NResults = sizeof(result) / sizeof(result[0]);
+ cout << "ADModelResult: [";
+ for (int i = 0; i < NResults; i++) {
+   cout << result[i] << ", ";
+ }
+ cout << "]" << std::endl; 
+ cout << "loss: " << loss << std::endl;
+ cout << "score float(loss*16) :" << score << std::endl;
+ cout << "----------------------------------" << std::endl;
+
+
  //number of objects/thrsholds to check
  int iCondition = 0;   // number of conditions: there is only one
  int nObjInCond = m_gtAXOL1TLTemplate->nrObjects();
